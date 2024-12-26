@@ -11,10 +11,10 @@ function App() {
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<Main />} />
-          <Route path="/movie/:id" element={<Main />} />
+          <Route path="/movie/:movieId" element={<Main />} />
         </Route>
       </Routes>
-      {movieModalOpen && <MovieInfo/>}
+      {movieModalOpen && <MovieInfo />}
     </>
   );
 }

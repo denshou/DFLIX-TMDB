@@ -1,16 +1,35 @@
 import { useNavigate } from "react-router-dom";
 import { useModal } from "../stores/modalStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Close from "../assets/close.svg";
+import { useParam } from "../stores/paramStore";
+import { getMovieDetail } from "../apis/getMovie";
 
 export default function MovieInfo() {
   const navigate = useNavigate();
+  const [currentMovie, setCurrentMovie] = useState<MovieDetailType | null>(
+    null
+  );
   const setMovieModalOpen = useModal((state) => state.setMovieModalOpen);
+  const movieIdParam = useParam((state) => state.movieIdParam);
+
   const handleClose = () => {
     setMovieModalOpen(false);
     document.body.style.overflow = "auto";
     navigate(-1);
   };
+  const getCurrentMovie = async () => {
+    if (movieIdParam) {
+      try {
+        const current = await getMovieDetail(movieIdParam);
+        console.log(current);
+        setCurrentMovie(current);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
   // URL이 변경되었을 때 모달 상태 처리
   useEffect(() => {
     const handlePopState = () => {
@@ -26,9 +45,16 @@ export default function MovieInfo() {
     };
   }, [location.pathname, setMovieModalOpen]);
 
+  useEffect(() => {
+    getCurrentMovie();
+  }, [movieIdParam]);
+
   return (
-    <div className="fixed top-0 left-0 bottom-0 right-0 bg-[#181818]/50 flex justify-center z-[9999] overflow-y-auto">
-      <div>
+    <div
+      className="fixed top-0 left-0 bottom-0 right-0 bg-[#181818]/50 flex justify-center overflow-y-auto z-[10]"
+      onClick={handleClose}
+    >
+      <div onClick={(e) => e.stopPropagation()}>
         <div className="w-[916px] min-h-[93%] bg-[#181818] rounded-lg relative text-white mt-10 p-10 pt-20">
           <button
             type="button"
@@ -40,23 +66,60 @@ export default function MovieInfo() {
           <div className="flex">
             <div className="rounded-lg overflow-hidden">
               <img
-                src={`https://image.tmdb.org/t/p/w500/9cqNxx0GxF0bflZmeSMuL5tnGzr.jpg`}
+                src={`https://image.tmdb.org/t/p/w500/${currentMovie?.poster_path}`}
                 className="w-[200px]"
                 alt=""
               />
             </div>
             <div>
-              <h2>레드 원</h2>
-              <h3>
-                크리스마스 실종 위기, 사라진 산타를 찾기 위한 대환장 플레이
-              </h3>
-              <h4>Red One</h4>
-              <div>별점</div>
-              <div>액션 판타지 코미디</div>
+              <h2>{currentMovie?.title}</h2>
+              <h3>{currentMovie?.tagline}</h3>
+              <h4>{currentMovie?.original_title}</h4>
+              <div className="star">
+                <ul className="flex">
+                  <li>
+                    <i
+                      className="fa-solid fa-star"
+                      style={{ color: "#FFD43B" }}
+                    ></i>
+                  </li>
+                  <li>
+                    <i
+                      className="fa-solid fa-star"
+                      style={{ color: "#FFD43B" }}
+                    ></i>
+                  </li>
+                  <li>
+                    <i
+                      className="fa-solid fa-star"
+                      style={{ color: "#FFD43B" }}
+                    ></i>
+                  </li>
+                  <li>
+                    <i
+                      className="fa-duotone fa-solid fa-star-half"
+                      style={{ color: "#FFD43B" }}
+                    ></i>
+                  </li>
+                  {/* <li>
+                    <i
+                      className="fa-solid fa-star"
+                      style={{ color: "#88888B" }}
+                    ></i>
+                  </li> */}
+                </ul>
+              </div>
+              <div>
+                <ul className="flex">
+                  {currentMovie?.genres.map((genre) => (
+                    <li>{genre.name}</li>
+                  ))}
+                </ul>
+              </div>
               <ul>
-                <li>평점</li>
-                <li>개봉일</li>
-                <li>런타임</li>
+                <li>평점 : {currentMovie?.vote_average} / 10</li>
+                <li>개봉일 : {currentMovie?.release_date}</li>
+                <li>런타임 : {currentMovie?.runtime} 분</li>
               </ul>
             </div>
           </div>

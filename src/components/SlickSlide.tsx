@@ -1,7 +1,6 @@
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Image1 from "../assets/image1.jpg";
 import ArrowLeft from "../assets/arrow-left.svg";
 import ArrowRight from "../assets/arrow-right.svg";
 import { useModal } from "../stores/modalStore";
@@ -53,7 +52,7 @@ const CustomNextArrow = (props: any) => {
   );
 };
 
-export default function SlickSlide() {
+export default function SlickSlide({ movieList }: { movieList: MovieType[] }) {
   const settings = {
     dots: true,
     infinite: true,
@@ -74,8 +73,8 @@ export default function SlickSlide() {
   const navigate = useNavigate();
 
   const setMovieModalOpen = useModal((state) => state.setMovieModalOpen);
-  const handleSlideClick = () => {
-    navigate("/movie/123");
+  const handleSlideClick = (movieId: number) => {
+    navigate(`/movie/${movieId}`);
     document.body.style.overflow = "hidden";
     setMovieModalOpen(true);
   };
@@ -83,41 +82,19 @@ export default function SlickSlide() {
   return (
     <div className="w-[90%] list-slider">
       <Slider {...settings}>
-        <div className="cursor-pointer" onClick={handleSlideClick}>
-          <img
-            src={`https://image.tmdb.org/t/p/w500/9cqNxx0GxF0bflZmeSMuL5tnGzr.jpg`}
-            className="w-full rounded-[4px]"
-            alt=""
-          />
-        </div>
-        <div>
-          <img src={Image1} className="w-full" alt="" />
-        </div>
-        <div>
-          <img src={Image1} className="w-full" alt="" />
-        </div>
-        <div>
-          <img src={Image1} className="w-full" alt="" />
-        </div>
-        <div>
-          <img src={Image1} className="w-full" alt="" />
-        </div>
-        <div>
-          <img src={Image1} className="w-full" alt="" />
-        </div>
-        <div>
-          <img src={Image1} className="w-full" alt="" />
-        </div>
-        <div>
-          <img src={Image1} className="w-full" alt="" />
-        </div>
-        <div>
-          <img
-            src={`https://image.tmdb.org/t/p/w500/9cqNxx0GxF0bflZmeSMuL5tnGzr.jpg`}
-            className="w-full rounded-[4px]"
-            alt=""
-          />
-        </div>
+        {movieList.map((movie) => (
+          <div
+            key={movie.id}
+            className="cursor-pointer"
+            onClick={() => handleSlideClick(movie.id)}
+          >
+            <img
+              src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+              className="h-[300px] object-cover rounded-[4px]"
+              alt="movie-poster"
+            />
+          </div>
+        ))}
       </Slider>
     </div>
   );

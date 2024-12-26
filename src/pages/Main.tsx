@@ -1,28 +1,29 @@
-
+import { useParams } from "react-router-dom";
+import MovieListContainer from "../components/MovieListContainer";
 import SlickBannerSlide from "../components/SlickBannerSlide";
-import SlickSlide from "../components/SlickSlide";
+import { useParam } from "../stores/paramStore";
+import { useEffect } from "react";
 
+import One from "../assets/1.svg";
 
 export default function Main() {
+  const { movieId } = useParams();
+  const setMovieIdParam = useParam((state) => state.setMovieIdParam);
+
+  useEffect(() => {
+    if (!movieId) setMovieIdParam(null);
+    else setMovieIdParam(Number(movieId));
+  }, [movieId]);
   return (
     <div>
       <div>
         <SlickBannerSlide />
       </div>
       <main>
-        <div className="list-container">
-          <h2>현재 상영중인 영화</h2>
-          <div className="flex flex-col items-center">
-            <SlickSlide />
-          </div>
-        </div>
-
-        <div className="list-container">
-          <h2>현재 상영중인 TV</h2>
-          <div className="flex flex-col items-center">
-            <SlickSlide />
-          </div>
-        </div>
+        <MovieListContainer type="now_playing" />
+        <img src={One} alt="" />
+        <MovieListContainer type="popular" />
+        <MovieListContainer type="trending" />
       </main>
     </div>
   );
