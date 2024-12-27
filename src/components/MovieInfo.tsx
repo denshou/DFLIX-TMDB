@@ -3,27 +3,56 @@ import { useModal } from "../stores/modalStore";
 import { useEffect, useState } from "react";
 import Close from "../assets/close.svg";
 import { useParam } from "../stores/paramStore";
-import { getMovieDetail } from "../apis/getMovie";
+import {
+  getMovieCredits,
+  getMovieDetail,
+  getMovieVideos,
+} from "../apis/getMovie";
+import YouTubePlayer from "./YouTubePlayer";
+import SlickSlideActors from "./SlickSlideActors";
 
 export default function MovieInfo() {
   const navigate = useNavigate();
   const [currentMovie, setCurrentMovie] = useState<MovieDetailType | null>(
     null
   );
+  const [actors, setActors] = useState<ActorType[] | null>(null);
+  const [videoId, setVideoId] = useState<string | null>(null);
   const setMovieModalOpen = useModal((state) => state.setMovieModalOpen);
-  const movieIdParam = useParam((state) => state.movieIdParam);
+  const movieId = useParam((state) => state.movieIdParam);
+  const setMovieId = useParam((state) => state.setMovieIdParam);
 
   const handleClose = () => {
+    setMovieId(null);
     setMovieModalOpen(false);
     document.body.style.overflow = "auto";
     navigate(-1);
   };
   const getCurrentMovie = async () => {
-    if (movieIdParam) {
+    if (movieId) {
       try {
-        const current = await getMovieDetail(movieIdParam);
-        console.log(current);
+        const current = await getMovieDetail(movieId);
         setCurrentMovie(current);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+  const getActors = async () => {
+    if (movieId) {
+      try {
+        const credits = await getMovieCredits(movieId);
+        setActors(credits.slice(0, 10));
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+  const getVideos = async () => {
+    if (movieId) {
+      try {
+        const videos = await getMovieVideos(movieId);
+        if (videos) setVideoId(videos[0].key);
       } catch (error) {
         console.log(error);
       }
@@ -46,8 +75,12 @@ export default function MovieInfo() {
   }, [location.pathname, setMovieModalOpen]);
 
   useEffect(() => {
-    getCurrentMovie();
-  }, [movieIdParam]);
+    if (movieId) {
+      getCurrentMovie();
+      getActors();
+      getVideos();
+    }
+  }, [movieId]);
 
   return (
     <div
@@ -112,7 +145,7 @@ export default function MovieInfo() {
               <div>
                 <ul className="flex">
                   {currentMovie?.genres.map((genre) => (
-                    <li>{genre.name}</li>
+                    <li key={genre.id}>{genre.name}</li>
                   ))}
                 </ul>
               </div>
@@ -124,9 +157,11 @@ export default function MovieInfo() {
             </div>
           </div>
           <div>공유하기</div>
-          <div>영화 설명 전체</div>
-          <div>출연진/credits</div>
-          <div>영상/videos</div>
+          <div>{currentMovie?.overview}</div>
+          <div className="pt-10 px-10 overflow-hidden">
+            {actors ? <SlickSlideActors actors={actors} /> : <></>}
+          </div>
+          <div>{videoId ? <YouTubePlayer videoId={videoId} /> : <></>}</div>
           <div>포스터/images</div>
           <div>제작진/credits</div>
 

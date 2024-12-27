@@ -52,13 +52,13 @@ const CustomNextArrow = (props: any) => {
   );
 };
 
-export default function SlickSlide({ movieList }: { movieList: MovieType[] }) {
+export default function SlickSlideActors({ actors }: { actors: ActorType[] }) {
   const settings = {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow:9,
-    slidesToScroll: 9,
+    slidesToShow: 7,
+    slidesToScroll: 6,
     prevArrow: <CustomPrevArrow />,
     nextArrow: <CustomNextArrow />,
     swipe: false,
@@ -79,24 +79,21 @@ export default function SlickSlide({ movieList }: { movieList: MovieType[] }) {
     setMovieModalOpen(true);
   };
 
-  
-
   return (
-    <div className="w-[90%] list-slider">
+    <div className="w-[100%] list-slider">
       <Slider {...settings}>
-        {movieList.map((movie) => (
-          <div
-            key={movie.id}
-            className="cursor-pointer"
-            onClick={() => handleSlideClick(movie.id)}
-          >
-            <div className="flex">
-              {/* <img src={One} className="h-[full]" alt="" /> */}
-              <img
-                src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
-                alt="movie-poster"
-              />
+        {actors?.map((actor) => (
+          <div key={actor.id}>
+            <div className="flex flex-col items-center">
+              <div className="w-[72px] h-[72px] rounded-full overflow-hidden">
+                <img
+                  src={`https://image.tmdb.org/t/p/w500/${actor.profile_path}`}
+                  className="w-[72px] h-[72px] object-cover"
+                  alt=""
+                />
+              </div>
+              <p className="text-center">{actor.name}</p>
+              <p className="text-center">{actor.character}</p>
             </div>
           </div>
         ))}

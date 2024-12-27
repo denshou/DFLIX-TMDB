@@ -6,6 +6,17 @@ import ArrowRight from "../assets/arrow-right.svg";
 import { useModal } from "../stores/modalStore";
 import { useNavigate } from "react-router-dom";
 
+import One from "../assets/1.svg";
+import Two from "../assets/2.svg";
+import Three from "../assets/3.svg";
+import Four from "../assets/4.svg";
+import Five from "../assets/5.svg";
+import Six from "../assets/6.svg";
+import Seven from "../assets/7.svg";
+import Eight from "../assets/8.svg";
+import Nine from "../assets/9.svg";
+import Ten from "../assets/10.svg";
+
 const CustomPrevArrow = (props: any) => {
   const { className, style, onClick } = props;
   return (
@@ -52,13 +63,17 @@ const CustomNextArrow = (props: any) => {
   );
 };
 
-export default function SlickSlide({ movieList }: { movieList: MovieType[] }) {
+export default function SlickSlideTrend({
+  movieList,
+}: {
+  movieList: MovieType[];
+}) {
   const settings = {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow:9,
-    slidesToScroll: 9,
+    slidesToShow: 6,
+    slidesToScroll: 6,
     prevArrow: <CustomPrevArrow />,
     nextArrow: <CustomNextArrow />,
     swipe: false,
@@ -73,28 +88,48 @@ export default function SlickSlide({ movieList }: { movieList: MovieType[] }) {
   const navigate = useNavigate();
 
   const setMovieModalOpen = useModal((state) => state.setMovieModalOpen);
+
+  const numberIcons = [
+    One,
+    Two,
+    Three,
+    Four,
+    Five,
+    Six,
+    Seven,
+    Eight,
+    Nine,
+    Ten,
+  ];
+
   const handleSlideClick = (movieId: number) => {
     navigate(`/movie/${movieId}`);
     document.body.style.overflow = "hidden";
     setMovieModalOpen(true);
   };
 
-  
-
   return (
     <div className="w-[90%] list-slider">
       <Slider {...settings}>
-        {movieList.map((movie) => (
+        {movieList.map((movie, index) => (
           <div
             key={movie.id}
             className="cursor-pointer"
             onClick={() => handleSlideClick(movie.id)}
           >
-            <div className="flex">
-              {/* <img src={One} className="h-[full]" alt="" /> */}
+            {/* 포스터 이미지 */}
+            <div className="relative flex justify-end aspect-[4/3]">
+              {/* 숫자 아이콘 */}
+              <div className="-z-[1]">
+                <img
+                  src={numberIcons[index]}
+                  className="h-full translate-x-5"
+                  alt={`number-${index + 1}`}
+                />
+              </div>
               <img
                 src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
+                className="object-cover rounded-[4px] aspect-[2/3]"
                 alt="movie-poster"
               />
             </div>
