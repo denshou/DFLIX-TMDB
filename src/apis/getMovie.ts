@@ -8,7 +8,7 @@ export const getTrendingMovies = async () => {
   return (await axiosInstance.get("trending/movie/day?language=ko-KR")).data
     .results;
 };
-export const getMovieDetail = async (movieId: number) => {
+export const getMovieDetails = async (movieId: number) => {
   return (await axiosInstance.get(`movie/${movieId}?language=ko-KR&page=1`))
     .data;
 };

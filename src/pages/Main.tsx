@@ -6,10 +6,14 @@ import { useEffect } from "react";
 import { useModal } from "../stores/modalStore";
 
 export default function Main() {
-  const { movieId } = useParams();
+  const { movieId, personId } = useParams();
   const movieModalOpen = useModal((state) => state.movieModalOpen);
   const setMovieModalOpen = useModal((state) => state.setMovieModalOpen);
   const setMovieIdParam = useParam((state) => state.setMovieIdParam);
+
+  const detailModalOpen = useModal((state) => state.detailModalOpen);
+  const setDetailModalOpen = useModal((state) => state.setDetailModalOpen);
+  const setPersonIdParam = useParam((state) => state.setPersonIdParam);
 
   useEffect(() => {
     if (!movieId) setMovieIdParam(null);
@@ -17,6 +21,13 @@ export default function Main() {
 
     if (movieId && !movieModalOpen) setMovieModalOpen(true);
   }, [movieId]);
+
+  useEffect(() => {
+    if (!personId) setPersonIdParam(null);
+    else setPersonIdParam(Number(personId));
+
+    if (personId && !detailModalOpen) setDetailModalOpen(true);
+  }, [personId]);
   return (
     <div>
       <div>

@@ -5,6 +5,7 @@ import ArrowLeft from "../assets/arrow-left.svg";
 import ArrowRight from "../assets/arrow-right.svg";
 import { useModal } from "../stores/modalStore";
 import { useNavigate } from "react-router-dom";
+import { useParam } from "../stores/paramStore";
 
 const CustomPrevArrow = (props: any) => {
   const { className, style, onClick } = props;
@@ -58,7 +59,7 @@ export default function SlickSlideActors({ actors }: { actors: ActorType[] }) {
     infinite: true,
     speed: 500,
     slidesToShow: 7,
-    slidesToScroll: 6,
+    slidesToScroll: 7,
     prevArrow: <CustomPrevArrow />,
     nextArrow: <CustomNextArrow />,
     swipe: false,
@@ -72,18 +73,19 @@ export default function SlickSlideActors({ actors }: { actors: ActorType[] }) {
   };
   const navigate = useNavigate();
 
-  const setMovieModalOpen = useModal((state) => state.setMovieModalOpen);
-  const handleSlideClick = (movieId: number) => {
-    navigate(`/movie/${movieId}`);
-    document.body.style.overflow = "hidden";
-    setMovieModalOpen(true);
+  const setDetailModalOpen = useModal((state) => state.setDetailModalOpen);
+  const movieId = useParam((state) => state.movieIdParam);
+
+  const handleSlideClick = (actorId:  number) => {
+    navigate(`/movie/${movieId}/person/${actorId}`);
+    setDetailModalOpen(true);
   };
 
   return (
     <div className="w-[100%] list-slider">
       <Slider {...settings}>
         {actors?.map((actor) => (
-          <div key={actor.id}>
+          <div key={actor.id} onClick={() => handleSlideClick(actor.id)}>
             <div className="flex flex-col items-center">
               <div className="w-[72px] h-[72px] rounded-full overflow-hidden">
                 <img
@@ -92,8 +94,8 @@ export default function SlickSlideActors({ actors }: { actors: ActorType[] }) {
                   alt=""
                 />
               </div>
-              <p className="text-center">{actor.name}</p>
-              <p className="text-center">{actor.character}</p>
+              <p className="text-center text-[12px] break-keep">{actor.name}</p>
+              <p className="text-center text-[10px] text-[#999999]">{actor.character}</p>
             </div>
           </div>
         ))}

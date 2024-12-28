@@ -5,7 +5,7 @@ import Close from "../assets/close.svg";
 import { useParam } from "../stores/paramStore";
 import {
   getMovieCredits,
-  getMovieDetail,
+  getMovieDetails,
   getMovieVideos,
 } from "../apis/getMovie";
 import YouTubePlayer from "./YouTubePlayer";
@@ -13,6 +13,7 @@ import SlickSlideActors from "./SlickSlideActors";
 
 export default function MovieInfo() {
   const navigate = useNavigate();
+
   const [currentMovie, setCurrentMovie] = useState<MovieDetailType | null>(
     null
   );
@@ -31,7 +32,7 @@ export default function MovieInfo() {
   const getCurrentMovie = async () => {
     if (movieId) {
       try {
-        const current = await getMovieDetail(movieId);
+        const current = await getMovieDetails(movieId);
         setCurrentMovie(current);
       } catch (error) {
         console.log(error);
@@ -52,7 +53,8 @@ export default function MovieInfo() {
     if (movieId) {
       try {
         const videos = await getMovieVideos(movieId);
-        if (videos) setVideoId(videos[0].key);
+        if (videos.length) setVideoId(videos[0].key);
+        else setVideoId(null);
       } catch (error) {
         console.log(error);
       }
@@ -76,19 +78,23 @@ export default function MovieInfo() {
 
   useEffect(() => {
     if (movieId) {
+      // if (location.pathname.includes("/person/")) return;
       getCurrentMovie();
       getActors();
       getVideos();
     }
-  }, [movieId]);
+  }, [location.pathname, movieId]);
 
   return (
     <div
-      className="fixed top-0 left-0 bottom-0 right-0 bg-[#181818]/50 flex justify-center overflow-y-auto z-[10]"
+      className="fixed top-0 left-0 bottom-0 right-0 bg-[#181818]/50 flex justify-center overflow-y-auto z-[100]"
       onClick={handleClose}
     >
-      <div onClick={(e) => e.stopPropagation()}>
-        <div className="w-[916px] min-h-[93%] bg-[#181818] rounded-lg relative text-white mt-10 p-10 pt-20">
+      <div>
+        <div
+          className="w-[916px] min-h-[93%] bg-[#181818] rounded-lg relative text-white mt-10 p-10 pt-20"
+          onClick={(e) => e.stopPropagation()}
+        >
           <button
             type="button"
             className="absolute top-4 right-4 bg-[#181818] rounded-full p-[5px]"
@@ -161,7 +167,7 @@ export default function MovieInfo() {
           <div className="pt-10 px-10 overflow-hidden">
             {actors ? <SlickSlideActors actors={actors} /> : <></>}
           </div>
-          <div>{videoId ? <YouTubePlayer videoId={videoId} /> : <></>}</div>
+          <div>{videoId ? <YouTubePlayer videoId={videoId}/> : <></>}</div>
           <div>포스터/images</div>
           <div>제작진/credits</div>
 

@@ -52,12 +52,16 @@ const CustomNextArrow = (props: any) => {
   );
 };
 
-export default function SlickSlide({ movieList }: { movieList: MovieType[] }) {
+export default function SlickSlide({
+  movieList,
+}: {
+  movieList: MovieType[] | PersonMovieCreditType[];
+}) {
   const settings = {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow:9,
+    slidesToShow: 9,
     slidesToScroll: 9,
     prevArrow: <CustomPrevArrow />,
     nextArrow: <CustomNextArrow />,
@@ -73,13 +77,12 @@ export default function SlickSlide({ movieList }: { movieList: MovieType[] }) {
   const navigate = useNavigate();
 
   const setMovieModalOpen = useModal((state) => state.setMovieModalOpen);
+  
   const handleSlideClick = (movieId: number) => {
     navigate(`/movie/${movieId}`);
     document.body.style.overflow = "hidden";
     setMovieModalOpen(true);
   };
-
-  
 
   return (
     <div className="w-[90%] list-slider">

@@ -1,7 +1,7 @@
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Image1 from "../assets/image1.jpg";
+import YouTubePlayer from "./YouTubePlayer";
 
 export default function SlickBannerSlide() {
   var settings = {
@@ -12,7 +12,7 @@ export default function SlickBannerSlide() {
     slidesToShow: 1,
     slidesToScroll: 1,
     waitForAnimate: false,
-    swipe:false,
+    swipe: false,
     customPaging: () => (
       <div className="h-full flex flex-col justify-center">
         <div className="custom-dot"></div>
@@ -26,27 +26,13 @@ export default function SlickBannerSlide() {
   };
 
   return (
-    <div className="w-[100%] max-h-[993px] overflow-hidden banner-slider">
+    <div className="w-[100%]  overflow-hidden banner-slider">
       <Slider {...settings}>
-        <div>
-          <img
-            src={`https://image.tmdb.org/t/p/original/9cqNxx0GxF0bflZmeSMuL5tnGzr.jpg`}
-            className="max-h-[993px]"
-            alt=""
-          />
-        </div>
-        <div>
-          <img src={Image1} className="max-h-[993px]" alt="" />
-        </div>
-        <div>
-          <img src={Image1} className="max-h-[993px]" alt="" />
-        </div>
-        <div>
-          <img src={Image1} className="max-h-[993px]" alt="" />
-        </div>
-        <div>
-          <img src={Image1} className="max-h-[993px]" alt="" />
-        </div>
+        <YouTubePlayer videoId={"dnmA7lKiFsY"} />
+        <YouTubePlayer videoId={"dnmA7lKiFsY"} />
+        <YouTubePlayer videoId={"dnmA7lKiFsY"} />
+        <YouTubePlayer videoId={"dnmA7lKiFsY"} />
+        <YouTubePlayer videoId={"dnmA7lKiFsY"} />
       </Slider>
     </div>
   );
