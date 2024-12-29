@@ -20,3 +20,7 @@ export const getMovieVideos = async (moiveId:number) => {
   return (await axiosInstance.get(`movie/${moiveId}/videos?language=ko-KR`)).data
     .results;
 };
+export const getMovieImages = async (moiveId:number) => {
+  return (await axiosInstance.get(`movie/${moiveId}/images`)).data
+    .backdrops;
+};

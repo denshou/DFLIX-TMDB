@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
 import MovieListContainer from "../components/MovieListContainer";
-import SlickBannerSlide from "../components/SlickBannerSlide";
 import { useParam } from "../stores/paramStore";
 import { useEffect } from "react";
 import { useModal } from "../stores/modalStore";
+import YouTubePlayer from "../components/YouTubePlayer";
 
 export default function Main() {
   const { movieId, personId } = useParams();
@@ -19,7 +19,10 @@ export default function Main() {
     if (!movieId) setMovieIdParam(null);
     else setMovieIdParam(Number(movieId));
 
-    if (movieId && !movieModalOpen) setMovieModalOpen(true);
+    if (movieId && !movieModalOpen) {
+      document.body.style.overflow = "hidden";
+      setMovieModalOpen(true);
+    }
   }, [movieId]);
 
   useEffect(() => {
@@ -30,8 +33,8 @@ export default function Main() {
   }, [personId]);
   return (
     <div>
-      <div>
-        <SlickBannerSlide />
+      <div className="mb-10">
+        <YouTubePlayer videoId={"dnmA7lKiFsY"} />
       </div>
       <main>
         <MovieListContainer type="trending" />

@@ -52,7 +52,13 @@
   margin: 0 1px;
 }
 .slick-dots .banner li:hover .custom-dot {
-  border: 2px #aaaaaa solid;
+  border: 3px #aaaaaa solid;
+}
+.slick-dots .banner .custom-dot {
+  border: 3px #4d4d4d solid;
+}
+.slick-dots .banner .slick-active .custom-dot {
+  border: 3px #aaaaaa solid;
 }
 .banner-slider .slick-dots {
   top: auto;

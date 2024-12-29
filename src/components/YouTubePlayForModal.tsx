@@ -9,12 +9,16 @@ type YouTubePlayer = {
   seekTo: (seconds: number) => void;
 };
 
-export default function YouTubePlayer({ videoId }: { videoId: string }) {
+export default function YouTubePlayerForModal({
+  videoId,
+}: {
+  videoId: string;
+}) {
   const playerRef = useRef<YouTubePlayer | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  const movieModalOpen = useModal((state) => state.movieModalOpen);
+  const detailModalOpen = useModal((state) => state.detailModalOpen);
 
   const opts = {
     width: "100%",
@@ -36,8 +40,7 @@ export default function YouTubePlayer({ videoId }: { videoId: string }) {
     playerRef.current = event.target as YouTubePlayer;
     if (playerRef.current) {
       event.target.mute();
-      if (!movieModalOpen) event.target.playVideo();
-
+      if (!detailModalOpen) event.target.playVideo();
     }
   };
 
@@ -45,7 +48,7 @@ export default function YouTubePlayer({ videoId }: { videoId: string }) {
     observerRef.current = new IntersectionObserver(
       ([entry]) => {
         if (playerRef.current) {
-          if (entry.intersectionRatio > 0.5 && !movieModalOpen) {
+          if (entry.intersectionRatio > 0.5 && !detailModalOpen) {
             playerRef.current.playVideo(); // 비디오 재생
           } else {
             playerRef.current.pauseVideo(); // 비디오 멈춤
@@ -64,8 +67,7 @@ export default function YouTubePlayer({ videoId }: { videoId: string }) {
         observerRef.current.unobserve(containerRef.current);
       }
     };
-  }, [movieModalOpen]);
-
+  }, [detailModalOpen]);
 
   return (
     //동영상 비율 16:9로 맞추기

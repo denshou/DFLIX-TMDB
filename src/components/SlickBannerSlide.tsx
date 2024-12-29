@@ -29,10 +29,6 @@ export default function SlickBannerSlide() {
     <div className="w-[100%]  overflow-hidden banner-slider">
       <Slider {...settings}>
         <YouTubePlayer videoId={"dnmA7lKiFsY"} />
-        <YouTubePlayer videoId={"dnmA7lKiFsY"} />
-        <YouTubePlayer videoId={"dnmA7lKiFsY"} />
-        <YouTubePlayer videoId={"dnmA7lKiFsY"} />
-        <YouTubePlayer videoId={"dnmA7lKiFsY"} />
       </Slider>
     </div>
   );

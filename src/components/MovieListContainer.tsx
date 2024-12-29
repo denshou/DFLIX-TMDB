@@ -3,6 +3,8 @@ import { getMovies, getTrendingMovies } from "../apis/getMovie";
 import SlickSlide from "./SlickSlide";
 import SlickSlideTrend from "./SlickSlideTrend";
 
+import ArrowRight from "../assets/arrow-right.svg";
+
 export default function MovieListContainer({ type }: { type: string }) {
   const [movieList, setMovieList] = useState<MovieType[]>([]);
   let listTitle = "";
@@ -40,8 +42,10 @@ export default function MovieListContainer({ type }: { type: string }) {
 
   if (type === "trending")
     return (
-      <div className="list-container">
-        <h2>{listTitle}</h2>
+      <div className="list-container mb-10">
+        <div className="flex justify-center">
+          <h2 className="text-[1.4vw] mb-2 w-[90%]">{listTitle}</h2>
+        </div>
         <div className="flex flex-col items-center">
           <SlickSlideTrend movieList={movieList} />
         </div>
@@ -49,8 +53,16 @@ export default function MovieListContainer({ type }: { type: string }) {
     );
 
   return (
-    <div className="list-container">
-      <h2>{listTitle}</h2>
+    <div className="list-container mb-10">
+      <div className="flex justify-center">
+        <h2 className="text-[1.4vw] flex mb-2 w-[90%] cursor-pointer">
+          {listTitle}
+          <div className="flex items-center ml-3">
+            <div className="text-[.9vw]">모두 보기</div>
+            <img src={ArrowRight} className="w-[1vw] mt-1" alt="" />
+          </div>
+        </h2>
+      </div>
       <div className="flex flex-col items-center">
         <SlickSlide movieList={movieList} />
       </div>

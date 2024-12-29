@@ -3,9 +3,10 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ArrowLeft from "../assets/arrow-left.svg";
 import ArrowRight from "../assets/arrow-right.svg";
-import { useModal } from "../stores/modalStore";
-import { useNavigate } from "react-router-dom";
-import { useParam } from "../stores/paramStore";
+import { useEffect } from "react";
+
+import { Fancybox } from "@fancyapps/ui";
+import "@fancyapps/ui/dist/fancybox/fancybox.css";
 
 const CustomPrevArrow = (props: any) => {
   const { className, style, onClick } = props;
@@ -53,13 +54,17 @@ const CustomNextArrow = (props: any) => {
   );
 };
 
-export default function SlickSlideActors({ actors }: { actors: ActorType[] }) {
+export default function SlickImageSlide({
+  imageList,
+}: {
+  imageList: MovieImageType[];
+}) {
   const settings = {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 7,
-    slidesToScroll: 7,
+    slidesToShow: 4,
+    slidesToScroll: 4,
     prevArrow: <CustomPrevArrow />,
     nextArrow: <CustomNextArrow />,
     swipe: false,
@@ -71,31 +76,42 @@ export default function SlickSlideActors({ actors }: { actors: ActorType[] }) {
       </div>
     ),
   };
-  const navigate = useNavigate();
 
-  const setDetailModalOpen = useModal((state) => state.setDetailModalOpen);
-  const movieId = useParam((state) => state.movieIdParam);
-
-  const handleSlideClick = (actorId:  number) => {
-    navigate(`/movie/${movieId}/person/${actorId}`);
-    setDetailModalOpen(true);
+  const handleImageClick = (imageUrl: string) => {
+    // Fancybox.show()를 사용하여 이미지를 모달로 띄운다
+    Fancybox.show([
+      {
+        src: imageUrl, // 모달에 띄울 이미지의 URL
+        type: "image", // 이미지 타입으로 지정
+      },
+    ]);
   };
+
+  useEffect(() => {
+    return () => {
+      Fancybox.destroy();
+    };
+  }, [imageList]);
 
   return (
     <div className="w-[100%] list-slider mt-5">
       <Slider {...settings}>
-        {actors?.map((actor) => (
-          <div key={actor.id} onClick={() => handleSlideClick(actor.id)}>
-            <div className="flex flex-col items-center">
-              <div className="w-[72px] h-[72px] rounded-full overflow-hidden">
+        {imageList.map((image, i) => (
+          <div key={i}>
+            <div className="flex">
+              <div
+                onClick={() => {
+                  handleImageClick(
+                    `https://image.tmdb.org/t/p/original${image.file_path}`
+                  );
+                }}
+              >
                 <img
-                  src={`https://image.tmdb.org/t/p/w500/${actor.profile_path}`}
-                  className="w-[72px] h-[72px] object-cover"
-                  alt=""
+                  src={`https://image.tmdb.org/t/p/w500${image.file_path}`}
+                  className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
+                  alt={`movie-image-${i}`}
                 />
               </div>
-              <p className="text-center text-[12px] break-keep">{actor.name}</p>
-              <p className="text-center text-[10px] text-[#999999]">{actor.character}</p>
             </div>
           </div>
         ))}

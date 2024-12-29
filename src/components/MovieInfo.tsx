@@ -6,10 +6,12 @@ import { useParam } from "../stores/paramStore";
 import {
   getMovieCredits,
   getMovieDetails,
+  getMovieImages,
   getMovieVideos,
 } from "../apis/getMovie";
-import YouTubePlayer from "./YouTubePlayer";
 import SlickSlideActors from "./SlickSlideActors";
+import YouTubePlayerForModal from "./YouTubePlayForModal";
+import SlickImageSlide from "./SlickImageSlide";
 
 export default function MovieInfo() {
   const navigate = useNavigate();
@@ -19,6 +21,7 @@ export default function MovieInfo() {
   );
   const [actors, setActors] = useState<ActorType[] | null>(null);
   const [videoId, setVideoId] = useState<string | null>(null);
+  const [images, setImages] = useState<MovieImageType[] | null>(null);
   const setMovieModalOpen = useModal((state) => state.setMovieModalOpen);
   const movieId = useParam((state) => state.movieIdParam);
   const setMovieId = useParam((state) => state.setMovieIdParam);
@@ -60,6 +63,44 @@ export default function MovieInfo() {
       }
     }
   };
+  const getImages = async () => {
+    if (movieId) {
+      try {
+        const backdrops = await getMovieImages(movieId);
+        if (backdrops.length) setImages(backdrops);
+        else setImages(null);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  const renderStars = (rating: number | null | undefined) => {
+    if (!rating) return null;
+
+    const fullStars = Math.floor(rating / 2); // 가득 찬 별의 개수
+    const halfStar = rating % 2 >= 1 ? 1 : 0; // 반쯤 찬 별 여부
+
+    return (
+      <ul className="flex">
+        {Array(fullStars)
+          .fill(0)
+          .map((_, idx) => (
+            <li key={`full-${idx}`}>
+              <i className="fa-solid fa-star" style={{ color: "#FFD43B" }}></i>
+            </li>
+          ))}
+        {halfStar === 1 && (
+          <li>
+            <i
+              className="fa-solid fa-star-half"
+              style={{ color: "#FFD43B" }}
+            ></i>
+          </li>
+        )}
+      </ul>
+    );
+  };
 
   // URL이 변경되었을 때 모달 상태 처리
   useEffect(() => {
@@ -78,10 +119,10 @@ export default function MovieInfo() {
 
   useEffect(() => {
     if (movieId) {
-      // if (location.pathname.includes("/person/")) return;
       getCurrentMovie();
       getActors();
       getVideos();
+      getImages();
     }
   }, [location.pathname, movieId]);
 
@@ -97,11 +138,20 @@ export default function MovieInfo() {
         >
           <button
             type="button"
-            className="absolute top-4 right-4 bg-[#181818] rounded-full p-[5px]"
+            className="absolute top-4 right-4 bg-[#181818] rounded-full p-[5px] z-50"
             onClick={handleClose}
           >
             <img src={Close} className="w-[30px]" alt="close" />
           </button>
+          {videoId ? (
+            <div className="mb-[56.25%]">
+              <div className="absolute top-0 left-0 w-full rounded-lg overflow-hidden">
+                <YouTubePlayerForModal videoId={videoId} />
+              </div>
+            </div>
+          ) : (
+            <></>
+          )}
           <div className="flex">
             <div className="rounded-lg overflow-hidden">
               <img
@@ -112,48 +162,17 @@ export default function MovieInfo() {
             </div>
             <div>
               <h2>{currentMovie?.title}</h2>
-              <h3>{currentMovie?.tagline}</h3>
-              <h4>{currentMovie?.original_title}</h4>
-              <div className="star">
-                <ul className="flex">
-                  <li>
-                    <i
-                      className="fa-solid fa-star"
-                      style={{ color: "#FFD43B" }}
-                    ></i>
-                  </li>
-                  <li>
-                    <i
-                      className="fa-solid fa-star"
-                      style={{ color: "#FFD43B" }}
-                    ></i>
-                  </li>
-                  <li>
-                    <i
-                      className="fa-solid fa-star"
-                      style={{ color: "#FFD43B" }}
-                    ></i>
-                  </li>
-                  <li>
-                    <i
-                      className="fa-duotone fa-solid fa-star-half"
-                      style={{ color: "#FFD43B" }}
-                    ></i>
-                  </li>
-                  {/* <li>
-                    <i
-                      className="fa-solid fa-star"
-                      style={{ color: "#88888B" }}
-                    ></i>
-                  </li> */}
-                </ul>
-              </div>
+              <h3>{currentMovie?.original_title}</h3>
               <div>
                 <ul className="flex">
                   {currentMovie?.genres.map((genre) => (
                     <li key={genre.id}>{genre.name}</li>
                   ))}
                 </ul>
+              </div>
+              <h3>{currentMovie?.tagline}</h3>
+              <div className="star">
+                {renderStars(currentMovie?.vote_average)}
               </div>
               <ul>
                 <li>평점 : {currentMovie?.vote_average} / 10</li>
@@ -162,13 +181,22 @@ export default function MovieInfo() {
               </ul>
             </div>
           </div>
-          <div>공유하기</div>
+          <button className=" w-[200px] h-[34px] rounded-lg bg-black/30 mt-5 border">
+            공유하기
+          </button>
           <div>{currentMovie?.overview}</div>
-          <div className="pt-10 px-10 overflow-hidden">
-            {actors ? <SlickSlideActors actors={actors} /> : <></>}
+          <div>
+            <div className="">출연진</div>
+            <div className="px-10 overflow-hidden">
+              {actors ? <SlickSlideActors actors={actors} /> : <></>}
+            </div>
           </div>
-          <div>{videoId ? <YouTubePlayer videoId={videoId}/> : <></>}</div>
-          <div>포스터/images</div>
+          <div className="">
+            <p>포토</p>
+            <div className="px-10 overflow-hidden">
+              {images ? <SlickImageSlide imageList={images} /> : <></>}
+            </div>
+          </div>
           <div>제작진/credits</div>
 
           <div>끝</div>

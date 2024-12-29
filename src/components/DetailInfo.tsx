@@ -81,7 +81,7 @@ export default function DetailInfo() {
     >
       <div>
         <div
-          className="w-[916px] min-h-[40%] bg-[#303030] rounded-lg relative text-white mt-[500px] p-10 pt-20"
+          className="w-[916px] min-h-[40%] bg-[#303030] rounded-lg relative text-white mt-[280px] p-10 pt-20"
           onClick={(e) => e.stopPropagation()}
         >
           <button
