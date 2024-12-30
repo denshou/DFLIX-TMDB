@@ -4,6 +4,8 @@ import Main from "./pages/Main";
 import MovieInfo from "./components/MovieInfo";
 import { useModal } from "./stores/modalStore";
 import DetailInfo from "./components/DetailInfo";
+import SignIn from "./pages/SignIn";
+import KakaoRedirect from "./pages/KakaoRedirect";
 
 function App() {
   const movieModalOpen = useModal((state) => state.movieModalOpen);
@@ -15,6 +17,8 @@ function App() {
           <Route path="/" element={<Main />} />
           <Route path="/movie/:movieId" element={<Main />} />
           <Route path="/movie/:movieId/person/:personId" element={<Main />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/auth/kakao/callback" element={<KakaoRedirect />} />
         </Route>
       </Routes>
       {movieModalOpen && <MovieInfo />}
