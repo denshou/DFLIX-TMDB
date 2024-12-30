@@ -44,7 +44,9 @@ export default function MovieListContainer({ type }: { type: string }) {
     return (
       <div className="list-container mb-10">
         <div className="flex justify-center">
-          <h2 className="text-[1.4vw] mb-2 w-[90%]">{listTitle}</h2>
+          <h2 className="text-[1.4vw] mb-2 w-[90%]">
+            <p>{listTitle}</p>
+          </h2>
         </div>
         <div className="flex flex-col items-center">
           <SlickSlideTrend movieList={movieList} />
@@ -55,9 +57,9 @@ export default function MovieListContainer({ type }: { type: string }) {
   return (
     <div className="list-container mb-10">
       <div className="flex justify-center">
-        <h2 className="text-[1.4vw] flex mb-2 w-[90%] cursor-pointer">
-          {listTitle}
-          <div className="flex items-center ml-3">
+        <h2 className="text-[1.4vw] flex mb-2 w-[90%]">
+          <p className="cursor-pointer">{listTitle}</p>
+          <div className="flex items-center ml-3 cursor-pointer">
             <div className="text-[.9vw]">모두 보기</div>
             <img src={ArrowRight} className="w-[1vw] mt-1" alt="" />
           </div>

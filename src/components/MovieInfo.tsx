@@ -13,6 +13,8 @@ import SlickSlideActors from "./SlickSlideActors";
 import YouTubePlayerForModal from "./YouTubePlayForModal";
 import SlickImageSlide from "./SlickImageSlide";
 
+const { Kakao } = window;
+
 export default function MovieInfo() {
   const navigate = useNavigate();
 
@@ -30,7 +32,13 @@ export default function MovieInfo() {
     setMovieId(null);
     setMovieModalOpen(false);
     document.body.style.overflow = "auto";
-    navigate(-1);
+    
+    // 이전 페이지가 없으면 홈으로 이동
+    if (window.history.length > 2) {
+      navigate(-1); // 이전 페이지로 이동
+    } else {
+      navigate("/", { replace: true }); // 홈으로 이동
+    }
   };
   const getCurrentMovie = async () => {
     if (movieId) {
@@ -102,6 +110,30 @@ export default function MovieInfo() {
     );
   };
 
+  const handleShareKakao = () => {
+    Kakao.Share.sendDefault({
+      objectType: "feed",
+      content: {
+        title: `${currentMovie?.title}`,
+        imageUrl:
+          `https://image.tmdb.org/t/p/w500/${currentMovie?.poster_path}` || "",
+        link: {
+          mobileWebUrl: `http://localhost:5173/movie/${currentMovie?.id}`,
+          webUrl: `http://localhost:5173/movie/${currentMovie?.id}`,
+        },
+      },
+      buttons: [
+        {
+          title: "페이지로 이동",
+          link: {
+            mobileWebUrl: `http://localhost:5173/movie/${currentMovie?.id}`,
+            webUrl: `http://localhost:5173/movie/${currentMovie?.id}`,
+          },
+        },
+      ],
+    });
+  };
+
   // URL이 변경되었을 때 모달 상태 처리
   useEffect(() => {
     const handlePopState = () => {
@@ -125,6 +157,12 @@ export default function MovieInfo() {
       getImages();
     }
   }, [location.pathname, movieId]);
+
+  useEffect(() => {
+    if (!window.Kakao.isInitialized()) {
+      window.Kakao.init("94330ec1fd217b86d3aec285df24bfb5");
+    }
+  }, []);
 
   return (
     <div
@@ -181,7 +219,10 @@ export default function MovieInfo() {
               </ul>
             </div>
           </div>
-          <button className=" w-[200px] h-[34px] rounded-lg bg-black/30 mt-5 border">
+          <button
+            className=" w-[200px] h-[34px] rounded-lg bg-black/30 mt-5 border"
+            onClick={handleShareKakao}
+          >
             공유하기
           </button>
           <div>{currentMovie?.overview}</div>
