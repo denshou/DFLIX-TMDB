@@ -2,12 +2,24 @@ import { useEffect, useState } from "react";
 import { useSearch } from "../stores/searchStore";
 import { getMovieSearch } from "../apis/getSearch";
 import useDebounce from "../hooks/useDebounce";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useModal } from "../stores/modalStore";
+import { useParam } from "../stores/paramStore";
 
 export default function Search() {
+  const { movieId, personId } = useParams();
   const navigate = useNavigate();
+
+  const movieModalOpen = useModal((state) => state.movieModalOpen);
+  const setMovieModalOpen = useModal((state) => state.setMovieModalOpen);
+  const setMovieIdParam = useParam((state) => state.setMovieIdParam);
+
+  const detailModalOpen = useModal((state) => state.detailModalOpen);
+  const setDetailModalOpen = useModal((state) => state.setDetailModalOpen);
+  const setPersonIdParam = useParam((state) => state.setPersonIdParam);
+
   const handlePosterClick = (movieId: number) => {
-    navigate(`/movie/${movieId}`);
+    navigate(`/search/movie/${movieId}`);
   };
 
   const searchWord = useSearch((state) => state.searchWord);
@@ -32,6 +44,22 @@ export default function Search() {
       setSearchedMovies([]);
     }
   }, [searchWordDebounce]);
+
+  useEffect(() => {
+    if (!movieId) setMovieIdParam(null);
+    else setMovieIdParam(Number(movieId));
+
+    if (movieId && !movieModalOpen) {
+      document.body.style.overflow = "hidden";
+      setMovieModalOpen(true);
+    }
+  }, [movieId]);
+  useEffect(() => {
+    if (!personId) setPersonIdParam(null);
+    else setPersonIdParam(Number(personId));
+
+    if (personId && !detailModalOpen) setDetailModalOpen(true);
+  }, [personId]);
   return (
     <div className="px-20">
       <div className="grid grid-cols-9 gap-3">

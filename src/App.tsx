@@ -20,7 +20,10 @@ function App() {
           <Route path="/movie/:movieId/person/:personId" element={<Main />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/auth/kakao/callback" element={<KakaoRedirect />} />
+
           <Route path="/search" element={<Search />} />
+          <Route path="/search/movie/:movieId" element={<Search />} />
+          <Route path="/search/movie/:movieId/person/:personId" element={<Search />} />
         </Route>
       </Routes>
       {movieModalOpen && <MovieInfo />}

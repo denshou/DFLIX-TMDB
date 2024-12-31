@@ -137,7 +137,7 @@ export default function MovieInfo() {
   // URL이 변경되었을 때 모달 상태 처리
   useEffect(() => {
     const handlePopState = () => {
-      if (!location.pathname.startsWith("/movie/")) {
+      if (!location.pathname.includes("/movie/")) {
         setMovieModalOpen(false);
         document.body.style.overflow = "auto";
       }

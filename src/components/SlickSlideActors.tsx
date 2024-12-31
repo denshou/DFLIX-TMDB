@@ -4,7 +4,7 @@ import "slick-carousel/slick/slick-theme.css";
 import ArrowLeft from "../assets/arrow-left.svg";
 import ArrowRight from "../assets/arrow-right.svg";
 import { useModal } from "../stores/modalStore";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useParam } from "../stores/paramStore";
 
 const CustomPrevArrow = (props: any) => {
@@ -72,12 +72,16 @@ export default function SlickSlideActors({ actors }: { actors: ActorType[] }) {
     ),
   };
   const navigate = useNavigate();
+  const location = useLocation();
+  console.log(location);
 
   const setDetailModalOpen = useModal((state) => state.setDetailModalOpen);
   const movieId = useParam((state) => state.movieIdParam);
 
-  const handleSlideClick = (actorId:  number) => {
-    navigate(`/movie/${movieId}/person/${actorId}`);
+  const handleSlideClick = (actorId: number) => {
+    if (location.pathname.includes("search"))
+      navigate(`/search/movie/${movieId}/person/${actorId}`);
+    else navigate(`/movie/${movieId}/person/${actorId}`);
     setDetailModalOpen(true);
   };
 
@@ -95,7 +99,9 @@ export default function SlickSlideActors({ actors }: { actors: ActorType[] }) {
                 />
               </div>
               <p className="text-center text-[12px] break-keep">{actor.name}</p>
-              <p className="text-center text-[10px] text-[#999999]">{actor.character}</p>
+              <p className="text-center text-[10px] text-[#999999]">
+                {actor.character}
+              </p>
             </div>
           </div>
         ))}

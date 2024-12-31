@@ -49,7 +49,9 @@ export default function DetailInfo() {
   };
 
   const handlePosterClick = (movieId: number) => {
-    navigate(`/movie/${movieId}`);
+    if (location.pathname.includes("search"))
+      navigate(`/search/movie/${movieId}`);
+    else navigate(`/movie/${movieId}`);
     setDetailModalOpen(false);
   };
 
