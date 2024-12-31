@@ -94,7 +94,6 @@ export default function SlickSlide({
             onClick={() => handleSlideClick(movie.id)}
           >
             <div className="flex">
-              {/* <img src={One} className="h-[full]" alt="" /> */}
               <img
                 src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                 className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
