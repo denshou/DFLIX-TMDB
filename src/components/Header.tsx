@@ -68,6 +68,11 @@ export default function Header() {
     setFocused(false);
   };
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    navigate(`/search?q=${searchWord}`);
+  };
+
   return (
     <div className="flex justify-center items-center h-[70px]">
       <div className="flex justify-between  items-center w-[90%]">
@@ -77,18 +82,20 @@ export default function Header() {
 
         <div className="flex gap-5 items-center">
           {focused ? (
-            <div className="relative border rounded-md p-1">
-              <img src={Search} className="absolute w-[30px]" alt="" />
-              <input
-                type="text"
-                className="bg-[#141414] h-[30px] pl-[40px] outline-none"
-                placeholder="제목, 사람"
-                value={searchWord}
-                onChange={handleInputChange}
-                onBlur={handleInputBlur}
-                ref={inputRef}
-              />
-            </div>
+            <form onSubmit={handleSubmit}>
+              <div className="relative border rounded-md p-1">
+                <img src={Search} className="absolute w-[30px]" alt="" />
+                <input
+                  type="text"
+                  className="bg-[#141414] h-[30px] pl-[40px] outline-none"
+                  placeholder="제목, 사람"
+                  value={searchWord}
+                  onChange={handleInputChange}
+                  onBlur={handleInputBlur}
+                  ref={inputRef}
+                />
+              </div>
+            </form>
           ) : (
             <button
               type="button"
