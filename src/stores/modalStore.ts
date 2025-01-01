@@ -5,6 +5,8 @@ type ModalStoreType = {
   setMovieModalOpen: (bool: boolean) => void;
   detailModalOpen: boolean;
   setDetailModalOpen: (bool: boolean) => void;
+  youtubeModalOpen: boolean;
+  setYoutubeModalOpen: (bool: boolean) => void;
 };
 
 export const useModal = create<ModalStoreType>((set) => ({
@@ -17,5 +19,10 @@ export const useModal = create<ModalStoreType>((set) => ({
   setDetailModalOpen: (bool) =>
     set(() => ({
       detailModalOpen: bool,
+    })),
+  youtubeModalOpen: false,
+  setYoutubeModalOpen: (bool) =>
+    set(() => ({
+      youtubeModalOpen: bool,
     })),
 }));

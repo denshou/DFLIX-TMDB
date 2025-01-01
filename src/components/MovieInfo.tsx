@@ -12,6 +12,7 @@ import {
 import SlickSlideActors from "./SlickSlideActors";
 import YouTubePlayerForModal from "./YouTubePlayForModal";
 import SlickImageSlide from "./SlickImageSlide";
+import SlickVideoSlide from "./SlickVideoSlide";
 
 const { Kakao } = window;
 
@@ -22,7 +23,7 @@ export default function MovieInfo() {
     null
   );
   const [actors, setActors] = useState<ActorType[] | null>(null);
-  const [videoId, setVideoId] = useState<string | null>(null);
+  const [videos, setVideos] = useState<MovieVideoType[] | null>(null);
   const [images, setImages] = useState<MovieImageType[] | null>(null);
   const setMovieModalOpen = useModal((state) => state.setMovieModalOpen);
   const movieId = useParam((state) => state.movieIdParam);
@@ -32,7 +33,7 @@ export default function MovieInfo() {
     setMovieId(null);
     setMovieModalOpen(false);
     document.body.style.overflow = "auto";
-    
+
     // 이전 페이지가 없으면 홈으로 이동
     if (window.history.length > 2) {
       navigate(-1); // 이전 페이지로 이동
@@ -64,8 +65,8 @@ export default function MovieInfo() {
     if (movieId) {
       try {
         const videos = await getMovieVideos(movieId);
-        if (videos.length) setVideoId(videos[0].key);
-        else setVideoId(null);
+        if (videos.length) setVideos(videos);
+        else setVideos(null);
       } catch (error) {
         console.log(error);
       }
@@ -181,10 +182,10 @@ export default function MovieInfo() {
           >
             <img src={Close} className="w-[30px]" alt="close" />
           </button>
-          {videoId ? (
+          {videos?.length ? (
             <div className="mb-[56.25%]">
               <div className="absolute top-0 left-0 w-full rounded-lg overflow-hidden">
-                <YouTubePlayerForModal videoId={videoId} />
+                <YouTubePlayerForModal videoId={videos[0].key} />
               </div>
             </div>
           ) : (
@@ -232,15 +233,22 @@ export default function MovieInfo() {
               {actors ? <SlickSlideActors actors={actors} /> : <></>}
             </div>
           </div>
-          <div className="">
-            <p>포토</p>
-            <div className="px-10 overflow-hidden">
-              {images ? <SlickImageSlide imageList={images} /> : <></>}
+          {videos && (
+            <div>
+              <p>영상</p>
+              <div className="px-10 overflow-hidden">
+                <SlickVideoSlide videoList={videos} />
+              </div>
             </div>
-          </div>
-          <div>제작진/credits</div>
-
-          <div>끝</div>
+          )}
+          {images && (
+            <div>
+              <p>포토</p>
+              <div className="px-10 overflow-hidden">
+                <SlickImageSlide imageList={images} />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

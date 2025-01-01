@@ -7,10 +7,12 @@ import DetailInfo from "./components/DetailInfo";
 import SignIn from "./pages/SignIn";
 import KakaoRedirect from "./pages/KakaoRedirect";
 import Search from "./pages/Search";
+import YouTubeModal from "./components/YouTubeModal";
 
 function App() {
   const movieModalOpen = useModal((state) => state.movieModalOpen);
   const detailModalOpen = useModal((state) => state.detailModalOpen);
+  const youtubeModalOpen = useModal((state) => state.youtubeModalOpen);
   return (
     <>
       <Routes>
@@ -18,6 +20,7 @@ function App() {
           <Route path="/" element={<Main />} />
           <Route path="/movie/:movieId" element={<Main />} />
           <Route path="/movie/:movieId/person/:personId" element={<Main />} />
+          <Route path="/movie/:movieId/videos/:videoId" element={<Main />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/auth/kakao/callback" element={<KakaoRedirect />} />
 
@@ -28,6 +31,7 @@ function App() {
       </Routes>
       {movieModalOpen && <MovieInfo />}
       {detailModalOpen && <DetailInfo />}
+      {youtubeModalOpen && <YouTubeModal/>}
     </>
   );
 }

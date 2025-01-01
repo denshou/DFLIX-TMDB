@@ -6,7 +6,7 @@ import { useModal } from "../stores/modalStore";
 import YouTubePlayer from "../components/YouTubePlayer";
 
 export default function Main() {
-  const { movieId, personId } = useParams();
+  const { movieId, personId, videoId } = useParams();
   const movieModalOpen = useModal((state) => state.movieModalOpen);
   const setMovieModalOpen = useModal((state) => state.setMovieModalOpen);
   const setMovieIdParam = useParam((state) => state.setMovieIdParam);
@@ -14,6 +14,10 @@ export default function Main() {
   const detailModalOpen = useModal((state) => state.detailModalOpen);
   const setDetailModalOpen = useModal((state) => state.setDetailModalOpen);
   const setPersonIdParam = useParam((state) => state.setPersonIdParam);
+
+  const youtubeModalOpen = useModal((state) => state.youtubeModalOpen);
+  const setYoutubeModalOpen = useModal((state) => state.setYoutubeModalOpen);
+  const setVideoIdParam = useParam((state) => state.setVideoIdParam);
 
   useEffect(() => {
     if (!movieId) setMovieIdParam(null);
@@ -31,6 +35,13 @@ export default function Main() {
 
     if (personId && !detailModalOpen) setDetailModalOpen(true);
   }, [personId]);
+
+  useEffect(() => {
+    if (!videoId) setVideoIdParam(null);
+    else setVideoIdParam(videoId);
+
+    if (videoId && !youtubeModalOpen) setYoutubeModalOpen(true);
+  }, [videoId]);
   return (
     <div>
       <div className="mb-10">

@@ -73,7 +73,6 @@ export default function SlickSlideActors({ actors }: { actors: ActorType[] }) {
   };
   const navigate = useNavigate();
   const location = useLocation();
-  console.log(location);
 
   const setDetailModalOpen = useModal((state) => state.setDetailModalOpen);
   const movieId = useParam((state) => state.movieIdParam);
