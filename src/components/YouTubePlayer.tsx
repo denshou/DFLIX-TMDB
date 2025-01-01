@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import YouTube, { YouTubeEvent } from "react-youtube";
 import { useModal } from "../stores/modalStore";
+import { useNavigate } from "react-router-dom";
 
 type YouTubePlayer = {
   playVideo: () => void;
@@ -9,12 +10,14 @@ type YouTubePlayer = {
   seekTo: (seconds: number) => void;
 };
 
-export default function YouTubePlayer({ videoId }: { videoId: string }) {
+export default function YouTubePlayer({ movieId, videoId }: { movieId:number, videoId: string }) {
+  const navigate = useNavigate()
   const playerRef = useRef<YouTubePlayer | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   const movieModalOpen = useModal((state) => state.movieModalOpen);
+  
 
   const opts = {
     width: "100%",
@@ -40,6 +43,10 @@ export default function YouTubePlayer({ videoId }: { videoId: string }) {
 
     }
   };
+
+  const handleDetailButton = ()=>{
+    navigate(`/movie/${movieId}`)
+  }
 
   useEffect(() => {
     observerRef.current = new IntersectionObserver(
@@ -72,6 +79,7 @@ export default function YouTubePlayer({ videoId }: { videoId: string }) {
     // YouTube 플레이어가 기본적으로 150px로 고정되는 문제를 방지하기 위해 부모와 자식 컨테이너 모두 height: 100%를 정확히 지정합니다.
     <div className="relative w-full pb-[56.25%]" ref={containerRef}>
       <div className="absolute top-0 left-0 w-full h-full">
+        <button type="button" onClick={handleDetailButton} className="absolute bottom-60 right-5 border rounded-md px-8 py-2 bg-transparent/30">상세 정보</button>
         <YouTube
           videoId={videoId}
           opts={opts}

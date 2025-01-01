@@ -1,9 +1,10 @@
 import { useParams } from "react-router-dom";
 import MovieListContainer from "../components/MovieListContainer";
 import { useParam } from "../stores/paramStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useModal } from "../stores/modalStore";
 import YouTubePlayer from "../components/YouTubePlayer";
+import { getMovieVideos, getTrendingMovies } from "../apis/getMovie";
 
 export default function Main() {
   const { movieId, personId, videoId } = useParams();
@@ -18,6 +19,11 @@ export default function Main() {
   const youtubeModalOpen = useModal((state) => state.youtubeModalOpen);
   const setYoutubeModalOpen = useModal((state) => state.setYoutubeModalOpen);
   const setVideoIdParam = useParam((state) => state.setVideoIdParam);
+
+  const [videoForBanner, setVideoForBanner] = useState<{
+    movieId: number;
+    key: string;
+  } | null>(null);
 
   useEffect(() => {
     if (!movieId) setMovieIdParam(null);
@@ -42,10 +48,36 @@ export default function Main() {
 
     if (videoId && !youtubeModalOpen) setYoutubeModalOpen(true);
   }, [videoId]);
+
+  const getVideoForBanner = async () => {
+    try {
+      const trendMovies = await getTrendingMovies();
+      const videoKeys = await Promise.all(
+        trendMovies.map(async (movie: MovieType) => {
+          const videos = await getMovieVideos(movie.id);
+          return { movieId: movie.id, key: videos[0]?.key || null };
+        })
+      );
+      const filtered = videoKeys.filter(({ key }) => Boolean(key));
+      const randomNumber = Math.floor(Math.random() * filtered.length);
+      setVideoForBanner(filtered[randomNumber]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getVideoForBanner();
+  }, []);
   return (
     <div>
       <div className="mb-10">
-        <YouTubePlayer videoId={"dnmA7lKiFsY"} />
+        {videoForBanner && (
+          <YouTubePlayer
+            movieId={videoForBanner.movieId}
+            videoId={videoForBanner.key}
+          />
+        )}
       </div>
       <main>
         <MovieListContainer type="trending" />
