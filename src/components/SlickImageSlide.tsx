@@ -93,6 +93,31 @@ export default function SlickImageSlide({
     };
   }, [imageList]);
 
+  if (imageList.length < 5)
+    return (
+      <div className="grid grid-cols-4 gap-2">
+        {imageList.map((image, i) => (
+          <div key={i}>
+            <div className="flex">
+              <div
+                onClick={() => {
+                  handleImageClick(
+                    `https://image.tmdb.org/t/p/original${image.file_path}`
+                  );
+                }}
+              >
+                <img
+                  src={`https://image.tmdb.org/t/p/w500${image.file_path}`}
+                  className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
+                  alt={`movie-image-${i}`}
+                />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+
   return (
     <div className="w-[100%] list-slider mt-5">
       <Slider {...settings}>

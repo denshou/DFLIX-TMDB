@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import Search from "../assets/search.svg";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getAuth, signOut, User } from "firebase/auth";
 import { useSearch } from "../stores/searchStore";
 
@@ -10,20 +10,21 @@ export default function Header() {
   const [user, setUser] = useState<User | null>(null);
 
   const handleLoginButton = () => {
-    if (user) {
-      // 로그아웃 처리
+    navigate("/signin");
+  };
+  const handleLogoutButton = () => {
+    const response = window.confirm("로그아웃 하시겠습니까?");
+    if (user && response) {
+      // 로그아웃
       const auth = getAuth();
       signOut(auth)
         .then(() => {
           console.log("로그아웃 성공");
-          setUser(null); // 로그아웃 후 사용자 상태 초기화
+          setUser(null);
         })
         .catch((error) => {
           console.error("로그아웃 실패", error);
         });
-    } else {
-      // 로그인 페이지로 이동
-      navigate("/signin");
     }
   };
 
@@ -50,6 +51,23 @@ export default function Header() {
     else navigate(`/search?q=${searchWord}`);
   }, [searchWord]);
 
+  //검색 버튼
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [focused, setFocused] = useState(false);
+
+  const handleSearchButton = () => {
+    setFocused(true);
+    //렌더링이 완료된 다음에 focus를 설정
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 0);
+  };
+
+  const handleInputBlur = () => {
+    if (inputRef.current?.value) return;
+    setFocused(false);
+  };
+
   return (
     <div className="flex justify-center items-center h-[70px]">
       <div className="flex justify-between  items-center w-[90%]">
@@ -58,29 +76,50 @@ export default function Header() {
         </Link>
 
         <div className="flex gap-5 items-center">
-          <button type="button" className="w-[30px]">
-            <img src={Search} alt="" />
-          </button>
-          <div className="relative">
-            <img src={Search} className="absolute w-[30px]" alt="" />
-            <input
-              type="text"
-              className="bg-[#141414] h-[30px] pl-[40px]"
-              placeholder="제목, 사람"
-              value={searchWord}
-              onChange={handleInputChange}
-            />
-          </div>
+          {focused ? (
+            <div className="relative border rounded-md p-1">
+              <img src={Search} className="absolute w-[30px]" alt="" />
+              <input
+                type="text"
+                className="bg-[#141414] h-[30px] pl-[40px] outline-none"
+                placeholder="제목, 사람"
+                value={searchWord}
+                onChange={handleInputChange}
+                onBlur={handleInputBlur}
+                ref={inputRef}
+              />
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={handleSearchButton}
+              className="w-[30px]"
+            >
+              <img src={Search} alt="" />
+            </button>
+          )}
+
           {user ? (
-            <div className="flex items-center" onClick={handleLoginButton}>
+            <div className="flex items-center relative group">
               <div className="w-11 rounded-full overflow-hidden">
                 <img src={user.photoURL || ""} alt="" />
               </div>
+              <p className="ml-2">{user.displayName} 님</p>
               <i
                 className="fa-solid fa-caret-down ml-2"
                 style={{ color: "#ffffff" }}
               ></i>
-              {/* <p className="ml-2">{user.displayName} 님</p> */}
+
+              <div className="absolute top-[44px] w-full h-[6px]"></div>
+
+              <div className="absolute top-[50px] w-full bg-[black] z-[10] border rounded-md cursor-pointer group-hover:block hidden group-focus-within::block">
+                <ul className="w-full divide-y">
+                  <li className="text-center py-1">설정</li>
+                  <li className="text-center py-1" onClick={handleLogoutButton}>
+                    로그아웃
+                  </li>
+                </ul>
+              </div>
             </div>
           ) : (
             <button
