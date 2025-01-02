@@ -81,14 +81,13 @@ export default function SlickImageSlide({
     // Fancybox.show()를 사용하여 이미지를 모달로 띄운다
     Fancybox.show([
       {
-        src: imageUrl, // 모달에 띄울 이미지의 URL
-        type: "image", // 이미지 타입으로 지정
+        src: imageUrl,
+        type: "image",
       },
     ]);
   };
 
   useEffect(() => {
-    if (imageList.length > 136) imageList = imageList.slice(0, 136);
     return () => {
       Fancybox.destroy();
     };

@@ -5,9 +5,10 @@ import useDebounce from "../hooks/useDebounce";
 import { useNavigate, useParams } from "react-router-dom";
 import { useModal } from "../stores/modalStore";
 import { useParam } from "../stores/paramStore";
+import { getMovies } from "../apis/getMovie";
 
 export default function Search() {
-  const { movieId, personId } = useParams();
+  const { movieId, personId, type } = useParams();
   const navigate = useNavigate();
 
   const movieModalOpen = useModal((state) => state.movieModalOpen);
@@ -18,8 +19,11 @@ export default function Search() {
   const setDetailModalOpen = useModal((state) => state.setDetailModalOpen);
   const setPersonIdParam = useParam((state) => state.setPersonIdParam);
 
+  const setTypeParam = useParam((state) => state.setTypeParam);
+
   const handlePosterClick = (movieId: number) => {
-    navigate(`/search/movie/${movieId}`);
+    if (type) navigate(`/m/${type}/movie/${movieId}`);
+    else navigate(`/search/movie/${movieId}`);
   };
 
   const searchWord = useSearch((state) => state.searchWord);
@@ -60,6 +64,26 @@ export default function Search() {
 
     if (personId && !detailModalOpen) setDetailModalOpen(true);
   }, [personId]);
+
+  useEffect(() => {
+    if (!type) setTypeParam(null);
+    else setTypeParam(type);
+  }, [type]);
+
+  useEffect(() => {
+    const getMoreMovies = async () => {
+      if (type) {
+        try {
+          const results = await getMovies(type);
+          setSearchedMovies(results);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    getMoreMovies();
+  }, [type]);
+
   return (
     <div className="px-20">
       <div className="grid grid-cols-9 gap-3">

@@ -7,6 +7,8 @@ type ParamStoreType = {
   setPersonIdParam: (personId: number | null) => void;
   videoIdParam: string | null;
   setVideoIdParam: (videoId: string | null) => void;
+  typeParam: string | null;
+  setTypeParam: (type: string | null) => void;
 };
 
 export const useParam = create<ParamStoreType>((set) => ({
@@ -24,5 +26,10 @@ export const useParam = create<ParamStoreType>((set) => ({
   setVideoIdParam: (videoId) =>
     set(() => ({
       videoIdParam: videoId,
+    })),
+  typeParam: null,
+  setTypeParam: (type) =>
+    set(() => ({
+      typeParam: type,
     })),
 }));

@@ -191,7 +191,7 @@ export default function MovieInfo() {
           ) : (
             <></>
           )}
-          <div className="flex">
+          <div className="flex gap-5">
             <div className="rounded-lg overflow-hidden">
               <img
                 src={`https://image.tmdb.org/t/p/w500/${currentMovie?.poster_path}`}
@@ -199,51 +199,76 @@ export default function MovieInfo() {
                 alt=""
               />
             </div>
-            <div>
-              <h2>{currentMovie?.title}</h2>
-              <h3>{currentMovie?.original_title}</h3>
+            <div className="flex flex-col gap-4">
               <div>
-                <ul className="flex">
+                <h2 className="text-[22px]">{currentMovie?.title}</h2>
+                <h3 className="text-[11px]">{currentMovie?.original_title}</h3>
+              </div>
+              <div>
+                <ul className="flex gap-2">
                   {currentMovie?.genres.map((genre) => (
-                    <li key={genre.id}>{genre.name}</li>
+                    <li
+                      key={genre.id}
+                      className="border rounded-lg bg-[#1e76dd] px-2 py-[2px] text-[12px]"
+                    >
+                      {genre.name}
+                    </li>
                   ))}
                 </ul>
               </div>
-              <h3>{currentMovie?.tagline}</h3>
+              <h3 className="text-[14px]">{currentMovie?.tagline}</h3>
               <div className="star">
                 {renderStars(currentMovie?.vote_average)}
               </div>
-              <ul>
-                <li>평점 : {currentMovie?.vote_average} / 10</li>
-                <li>개봉일 : {currentMovie?.release_date}</li>
-                <li>런타임 : {currentMovie?.runtime} 분</li>
+              <ul className="flex flex-col gap-1 text-[15px]">
+                <li>
+                  <i
+                    className="fa-solid fa-star fa-xs mr-1"
+                    style={{ color: "#ffffff" }}
+                  ></i>
+                  평점 :{currentMovie?.vote_average} / 10
+                </li>
+                <li>
+                  <i
+                    className="fa-solid fa-film fa-xs mr-1"
+                    style={{ color: "#ffffff" }}
+                  ></i>
+                  개봉일 : {currentMovie?.release_date}
+                </li>
+                <li>
+                  <i
+                    className="fa-solid fa-clock-rotate-left fa-xs mr-1"
+                    style={{ color: "#ffffff" }}
+                  ></i>
+                  런타임 : {currentMovie?.runtime} 분
+                </li>
               </ul>
             </div>
           </div>
           <button
-            className=" w-[200px] h-[34px] rounded-lg bg-black/30 mt-5 border"
+            className=" w-[200px] h-[34px] rounded-lg bg-black/30 my-5 border"
             onClick={handleShareKakao}
           >
             공유하기
           </button>
           <div>{currentMovie?.overview}</div>
-          <div>
-            <div className="">출연진</div>
+          <div className="my-5">
+            <p className="text-[18px]">출연진</p>
             <div className="px-10 overflow-hidden">
               {actors ? <SlickSlideActors actors={actors} /> : <></>}
             </div>
           </div>
           {videos && (
-            <div>
-              <p>영상</p>
+            <div className="my-5">
+              <p className="text-[18px]">영상</p>
               <div className="px-10 overflow-hidden">
                 <SlickVideoSlide videoList={videos} />
               </div>
             </div>
           )}
           {images && (
-            <div>
-              <p>포토</p>
+            <div className="mt-5">
+              <p className="text-[18px]">포토</p>
               <div className="px-10 overflow-hidden">
                 <SlickImageSlide imageList={images} />
               </div>

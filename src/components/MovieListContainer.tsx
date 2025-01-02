@@ -4,8 +4,10 @@ import SlickSlide from "./SlickSlide";
 import SlickSlideTrend from "./SlickSlideTrend";
 
 import ArrowRight from "../assets/arrow-right.svg";
+import { useNavigate } from "react-router-dom";
 
 export default function MovieListContainer({ type }: { type: string }) {
+  const navigate = useNavigate();
   const [movieList, setMovieList] = useState<MovieType[]>([]);
   let listTitle = "";
   switch (type) {
@@ -40,6 +42,10 @@ export default function MovieListContainer({ type }: { type: string }) {
     getMovieList();
   }, []);
 
+  const handleMoreClick = () => {
+    navigate(`/m/${type}`);
+  }
+
   if (type === "trending")
     return (
       <div className="list-container mb-10">
@@ -59,7 +65,7 @@ export default function MovieListContainer({ type }: { type: string }) {
       <div className="flex justify-center">
         <h2 className="text-[1.4vw] flex mb-2 w-[90%]">
           <p className="cursor-pointer">{listTitle}</p>
-          <div className="flex items-center ml-3 cursor-pointer">
+          <div className="flex items-center ml-3 cursor-pointer" onClick={handleMoreClick}>
             <div className="text-[.9vw]">모두 보기</div>
             <img src={ArrowRight} className="w-[1vw] mt-1" alt="" />
           </div>

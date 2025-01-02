@@ -93,7 +93,7 @@ export default function DetailInfo() {
           >
             <img src={Close} className="w-[30px]" alt="close" />
           </button>
-          <div className="flex">
+          <div className="flex gap-5">
             <div className="rounded-lg overflow-hidden">
               <img
                 src={`https://image.tmdb.org/t/p/w500/${currentPerson?.profile_path}`}
@@ -101,9 +101,9 @@ export default function DetailInfo() {
                 alt=""
               />
             </div>
-            <div>
-              <h2>{currentPerson?.name}</h2>
-              <ul>
+            <div className="flex flex-col gap-2">
+              <h2 className="text-[22px]">{currentPerson?.name}</h2>
+              <ul className="flex flex-col gap-1 text-[15px]">
                 <li>{currentPerson?.birthday}</li>
                 <li>{currentPerson?.place_of_birth}</li>
                 <li>{currentPerson?.popularity} / 100</li>
@@ -111,7 +111,7 @@ export default function DetailInfo() {
             </div>
           </div>
           <div className="overflow-hidden">
-            <p>출연작</p>
+            <p className="text-[18px] my-5">출연작</p>
             <div className="grid grid-cols-4 gap-3">
               {currentPersonCredits ? (
                 currentPersonCredits.map((movie) => (
@@ -134,8 +134,6 @@ export default function DetailInfo() {
               )}
             </div>
           </div>
-
-          <div>끝</div>
         </div>
       </div>
     </div>

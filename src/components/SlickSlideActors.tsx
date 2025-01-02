@@ -76,11 +76,15 @@ export default function SlickSlideActors({ actors }: { actors: ActorType[] }) {
 
   const setDetailModalOpen = useModal((state) => state.setDetailModalOpen);
   const movieId = useParam((state) => state.movieIdParam);
+  const type = useParam((state) => state.typeParam);
 
   const handleSlideClick = (actorId: number) => {
     if (location.pathname.includes("search"))
       navigate(`/search/movie/${movieId}/person/${actorId}`);
-    else navigate(`/movie/${movieId}/person/${actorId}`);
+    else if (location.pathname.includes("/m/")) {
+      console.log("m");
+      navigate(`/m/${type}/movie/${movieId}/person/${actorId}`);
+    } else navigate(`/movie/${movieId}/person/${actorId}`);
     setDetailModalOpen(true);
   };
 

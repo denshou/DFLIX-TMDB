@@ -26,12 +26,19 @@ function App() {
 
           <Route path="/search" element={<Search />} />
           <Route path="/search/movie/:movieId" element={<Search />} />
-          <Route path="/search/movie/:movieId/person/:personId" element={<Search />} />
+          <Route
+            path="/search/movie/:movieId/person/:personId"
+            element={<Search />}
+          />
+
+          <Route path="/m/:type" element={<Search />} />
+          <Route path="/m/:type/movie/:movieId" element={<Search />} />
+          <Route path="/m/:type/movie/:movieId/person/:personId" element={<Search />} />
         </Route>
       </Routes>
       {movieModalOpen && <MovieInfo />}
       {detailModalOpen && <DetailInfo />}
-      {youtubeModalOpen && <YouTubeModal/>}
+      {youtubeModalOpen && <YouTubeModal />}
     </>
   );
 }
