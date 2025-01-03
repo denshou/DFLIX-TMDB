@@ -13,6 +13,7 @@ import SlickSlideActors from "./SlickSlideActors";
 import YouTubePlayerForModal from "./YouTubePlayForModal";
 import SlickImageSlide from "./SlickImageSlide";
 import SlickVideoSlide from "./SlickVideoSlide";
+import PosterNotFound from "../assets/poster_not_found.svg";
 
 const { Kakao } = window;
 
@@ -193,11 +194,15 @@ export default function MovieInfo() {
           )}
           <div className="flex gap-5">
             <div className="rounded-lg overflow-hidden">
-              <img
-                src={`https://image.tmdb.org/t/p/w500/${currentMovie?.poster_path}`}
-                className="w-[200px]"
-                alt=""
-              />
+              {currentMovie?.poster_path ? (
+                <img
+                  src={`https://image.tmdb.org/t/p/w500/${currentMovie?.poster_path}`}
+                  className="w-[200px]"
+                  alt=""
+                />
+              ) : (
+                <img src={PosterNotFound} className="w-[200px]" alt="" />
+              )}
             </div>
             <div className="flex flex-col gap-4">
               <div>

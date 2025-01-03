@@ -3,6 +3,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ArrowLeft from "../assets/arrow-left.svg";
 import ArrowRight from "../assets/arrow-right.svg";
+import ProfileNotFound from "../assets/profile_not_found.svg";
 import { useModal } from "../stores/modalStore";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useParam } from "../stores/paramStore";
@@ -88,6 +89,38 @@ export default function SlickSlideActors({ actors }: { actors: ActorType[] }) {
     setDetailModalOpen(true);
   };
 
+  if (actors.length < 8) {
+    return (
+      <div className="flex mt-5 gap-[40px]">
+        {actors?.map((actor) => (
+          <div key={actor.id} onClick={() => handleSlideClick(actor.id)}>
+            <div className="flex flex-col items-center">
+              <div className="w-[72px] h-[72px] rounded-full overflow-hidden">
+                {actor.profile_path ? (
+                  <img
+                    src={`https://image.tmdb.org/t/p/w500/${actor.profile_path}`}
+                    className="w-[72px] h-[72px] object-cover"
+                    alt=""
+                  />
+                ) : (
+                  <img
+                    src={ProfileNotFound}
+                    className="w-[72px] h-[72px] object-cover"
+                    alt=""
+                  />
+                )}
+              </div>
+              <p className="text-center text-[12px] break-keep">{actor.name}</p>
+              <p className="text-center text-[10px] text-[#999999]">
+                {actor.character}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="w-[100%] list-slider mt-5">
       <Slider {...settings}>
@@ -95,11 +128,19 @@ export default function SlickSlideActors({ actors }: { actors: ActorType[] }) {
           <div key={actor.id} onClick={() => handleSlideClick(actor.id)}>
             <div className="flex flex-col items-center">
               <div className="w-[72px] h-[72px] rounded-full overflow-hidden">
-                <img
-                  src={`https://image.tmdb.org/t/p/w500/${actor.profile_path}`}
-                  className="w-[72px] h-[72px] object-cover"
-                  alt=""
-                />
+                {actor.profile_path ? (
+                  <img
+                    src={`https://image.tmdb.org/t/p/w500/${actor.profile_path}`}
+                    className="w-[72px] h-[72px] object-cover"
+                    alt=""
+                  />
+                ) : (
+                  <img
+                    src={ProfileNotFound}
+                    className="w-[72px] h-[72px] object-cover"
+                    alt=""
+                  />
+                )}
               </div>
               <p className="text-center text-[12px] break-keep">{actor.name}</p>
               <p className="text-center text-[10px] text-[#999999]">

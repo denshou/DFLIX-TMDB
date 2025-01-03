@@ -2,7 +2,9 @@ import { useNavigate } from "react-router-dom";
 import { useModal } from "../stores/modalStore";
 import { useEffect, useState } from "react";
 import Close from "../assets/close.svg";
+import PosterNotFound from "../assets/poster_not_found.svg";
 import { useParam } from "../stores/paramStore";
+import ProfileNotFound from "../assets/profile_not_found.svg";
 
 import { getPersonDetails, getPersonMovieCredits } from "../apis/getPerson";
 
@@ -95,11 +97,19 @@ export default function DetailInfo() {
           </button>
           <div className="flex gap-5">
             <div className="rounded-lg overflow-hidden">
-              <img
-                src={`https://image.tmdb.org/t/p/w500/${currentPerson?.profile_path}`}
-                className="w-[200px]"
-                alt=""
-              />
+              {currentPerson?.profile_path ? (
+                <img
+                  src={`https://image.tmdb.org/t/p/w500/${currentPerson?.profile_path}`}
+                  className="w-[200px]"
+                  alt=""
+                />
+              ) : (
+                <img
+                  src={ProfileNotFound}
+                  className="w-[200px]"
+                  alt=""
+                />
+              )}
             </div>
             <div className="flex flex-col gap-2">
               <h2 className="text-[22px]">{currentPerson?.name}</h2>
@@ -121,11 +131,19 @@ export default function DetailInfo() {
                     onClick={() => handlePosterClick(movie.id)}
                   >
                     <div>
-                      <img
-                        src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                        className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
-                        alt="movie-poster"
-                      />
+                      {movie.poster_path ? (
+                        <img
+                          src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                          className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
+                          alt="movie-poster"
+                        />
+                      ) : (
+                        <img
+                          src={PosterNotFound}
+                          className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
+                          alt="movie-poster"
+                        />
+                      )}
                     </div>
                   </div>
                 ))
