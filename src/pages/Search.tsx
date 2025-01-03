@@ -84,7 +84,20 @@ export default function Search() {
 
   useEffect(() => {
     const getNextPage = async () => {
-      if (type && page) {
+      if (page && location.pathname.includes("/search")) {
+        try {
+          const nextMovies = await getMovieSearch(searchWordDebounce, page);
+          setSearchedMovies((prev) => {
+            const uniqueMovies = nextMovies.filter(
+              (newMovie: MovieType) =>
+                !prev.some((movie) => movie.id === newMovie.id)
+            );
+            return [...prev, ...uniqueMovies];
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      } else if (type && page) {
         try {
           const nextMovies = await getMovies(type, page);
           setSearchedMovies((prev) => {
