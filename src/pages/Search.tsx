@@ -7,6 +7,9 @@ import { useModal } from "../stores/modalStore";
 import { useParam } from "../stores/paramStore";
 import { getMovies } from "../apis/getMovie";
 
+import ArrowDown from "../assets/arrow-down.svg";
+import PosterNotFound from "../assets/poster_not_found.svg";
+
 export default function Search() {
   const { movieId, personId, type } = useParams();
   const navigate = useNavigate();
@@ -20,6 +23,8 @@ export default function Search() {
   const setPersonIdParam = useParam((state) => state.setPersonIdParam);
 
   const setTypeParam = useParam((state) => state.setTypeParam);
+
+  const [page, setPage] = useState(1);
 
   const handlePosterClick = (movieId: number) => {
     if (type) navigate(`/m/${type}/movie/${movieId}`);
@@ -67,22 +72,35 @@ export default function Search() {
 
   useEffect(() => {
     if (!type) setTypeParam(null);
-    else setTypeParam(type);
+    else {
+      setTypeParam(type);
+      setPage(1);
+    }
   }, [type]);
 
+  const handleMoreButton = () => {
+    setPage((prev) => prev + 1);
+  };
+
   useEffect(() => {
-    const getMoreMovies = async () => {
-      if (type) {
+    const getNextPage = async () => {
+      if (type && page) {
         try {
-          const results = await getMovies(type);
-          setSearchedMovies(results);
+          const nextMovies = await getMovies(type, page);
+          setSearchedMovies((prev) => {
+            const uniqueMovies = nextMovies.filter(
+              (newMovie: MovieType) =>
+                !prev.some((movie) => movie.id === newMovie.id)
+            );
+            return [...prev, ...uniqueMovies];
+          });
         } catch (error) {
           console.log(error);
         }
       }
     };
-    getMoreMovies();
-  }, [type]);
+    getNextPage();
+  }, [page, type]);
 
   return (
     <div className="px-20">
@@ -94,14 +112,32 @@ export default function Search() {
             onClick={() => handlePosterClick(movie.id)}
           >
             <div>
-              <img
-                src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
-                alt="movie-poster"
-              />
+              {movie.poster_path ? (
+                <img
+                  src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                  className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
+                  alt="movie-poster"
+                />
+              ) : (
+                <img
+                  src={PosterNotFound}
+                  className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
+                  alt="movie-poster"
+                />
+              )}
             </div>
           </div>
         ))}
+      </div>
+      <div className="border my-20"></div>
+      <div className="flex justify-center">
+        <button
+          type="button"
+          onClick={handleMoreButton}
+          className="flex justify-center items-center border-2 rounded-full h-[3rem] w-[3rem] -mt-[6.6rem] bg-[#141414]"
+        >
+          <img src={ArrowDown} alt="" />
+        </button>
       </div>
     </div>
   );
