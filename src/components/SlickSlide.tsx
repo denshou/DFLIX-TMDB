@@ -54,8 +54,10 @@ const CustomNextArrow = (props: any) => {
 
 export default function SlickSlide({
   movieList,
+  type,
 }: {
-  movieList: MovieType[] | PersonMovieCreditType[];
+  movieList: MovieType[] | TVType[] | PersonMovieCreditType[];
+  type: string;
 }) {
   const settings = {
     dots: true,
@@ -77,9 +79,10 @@ export default function SlickSlide({
   const navigate = useNavigate();
 
   const setMovieModalOpen = useModal((state) => state.setMovieModalOpen);
-  
+
   const handleSlideClick = (movieId: number) => {
-    navigate(`/movie/${movieId}`);
+    if (type === "movie") navigate(`/movie/${movieId}`);
+    else if (type === "tv") navigate(`/tv/${movieId}`);
     document.body.style.overflow = "hidden";
     setMovieModalOpen(true);
   };

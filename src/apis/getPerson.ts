@@ -9,3 +9,9 @@ export const getPersonMovieCredits = async (personId: number) => {
     await axiosInstance.get(`person/${personId}/movie_credits?language=ko-KR`)
   ).data.cast;
 };
+
+export const getPersonTVCredits = async (personId: number) => {
+  return (
+    await axiosInstance.get(`person/${personId}/tv_credits?language=ko-KR`)
+  ).data.cast;
+};

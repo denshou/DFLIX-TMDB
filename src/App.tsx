@@ -21,6 +21,11 @@ function App() {
           <Route path="/movie/:movieId" element={<Main />} />
           <Route path="/movie/:movieId/person/:personId" element={<Main />} />
           <Route path="/movie/:movieId/videos/:videoId" element={<Main />} />
+
+          <Route path="/tv/:movieId" element={<Main />} />
+          <Route path="/tv/:movieId/person/:personId" element={<Main />} />
+          <Route path="/tv/:movieId/videos/:videoId" element={<Main />} />
+
           <Route path="/signin" element={<SignIn />} />
           <Route path="/auth/kakao/callback" element={<KakaoRedirect />} />
 
@@ -31,9 +36,13 @@ function App() {
             element={<Search />}
           />
 
-          <Route path="/m/:type" element={<Search />} />
-          <Route path="/m/:type/movie/:movieId" element={<Search />} />
-          <Route path="/m/:type/movie/:movieId/person/:personId" element={<Search />} />
+          <Route path="/m/:type/:getBy" element={<Search />} />
+          <Route path="/m/:getBy/movie/:movieId" element={<Search />} />
+          <Route path="/m/:getBy/movie/:movieId/person/:personId" element={<Search />} />
+
+          <Route path="/m/:getBy/tv/:movieId" element={<Search />} />
+          <Route path="/m/:getBy/tv/:movieId/person/:personId" element={<Search />} />
+
         </Route>
       </Routes>
       {movieModalOpen && <MovieInfo />}

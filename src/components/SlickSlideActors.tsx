@@ -83,9 +83,14 @@ export default function SlickSlideActors({ actors }: { actors: ActorType[] }) {
     if (location.pathname.includes("search"))
       navigate(`/search/movie/${movieId}/person/${actorId}`);
     else if (location.pathname.includes("/m/")) {
-      console.log("m");
-      navigate(`/m/${type}/movie/${movieId}/person/${actorId}`);
-    } else navigate(`/movie/${movieId}/person/${actorId}`);
+      if (location.pathname.includes("/movie/"))
+        navigate(`/m/${type}/movie/${movieId}/person/${actorId}`);
+      else if (location.pathname.includes("/tv/"))
+        navigate(`/m/${type}/tv/${movieId}/person/${actorId}`);
+    } else if (location.pathname.includes("/movie/"))
+      navigate(`/movie/${movieId}/person/${actorId}`);
+    else navigate(`/tv/${movieId}/person/${actorId}`);
+
     setDetailModalOpen(true);
   };
 

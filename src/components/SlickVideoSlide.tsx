@@ -6,7 +6,7 @@ import ArrowRight from "../assets/arrow-right.svg";
 import { useEffect } from "react";
 
 import "@fancyapps/ui/dist/fancybox/fancybox.css";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useParam } from "../stores/paramStore";
 
 const CustomPrevArrow = (props: any) => {
@@ -62,6 +62,7 @@ export default function SlickVideoSlide({
 }) {
   const navigate = useNavigate();
   const movieId = useParam((state) => state.movieIdParam);
+  const location = useLocation();
 
   const settings = {
     dots: true,
@@ -82,7 +83,9 @@ export default function SlickVideoSlide({
   };
 
   const handleImageClick = (videoKey: string) => {
-    navigate(`/movie/${movieId}/videos/${videoKey}`);
+    if (location.pathname.includes("/movie/")) {
+      navigate(`/movie/${movieId}/videos/${videoKey}`);
+    } else navigate(`/tv/${movieId}/videos/${videoKey}`);
   };
 
   useEffect(() => {

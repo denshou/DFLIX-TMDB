@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useModal } from "../stores/modalStore";
 import { useEffect, useState } from "react";
 import Close from "../assets/close.svg";
@@ -14,21 +14,29 @@ import YouTubePlayerForModal from "./YouTubePlayForModal";
 import SlickImageSlide from "./SlickImageSlide";
 import SlickVideoSlide from "./SlickVideoSlide";
 import PosterNotFound from "../assets/poster_not_found.svg";
+import {
+  getTVCredits,
+  getTVDetails,
+  getTVImages,
+  getTVVideos,
+} from "../apis/getTV";
 
 const { Kakao } = window;
 
 export default function MovieInfo() {
   const navigate = useNavigate();
 
-  const [currentMovie, setCurrentMovie] = useState<MovieDetailType | null>(
-    null
-  );
+  const [currentMovie, setCurrentMovie] = useState<
+    MovieDetailType | TVDetailType | null
+  >(null);
   const [actors, setActors] = useState<ActorType[] | null>(null);
   const [videos, setVideos] = useState<MovieVideoType[] | null>(null);
   const [images, setImages] = useState<MovieImageType[] | null>(null);
   const setMovieModalOpen = useModal((state) => state.setMovieModalOpen);
   const movieId = useParam((state) => state.movieIdParam);
   const setMovieId = useParam((state) => state.setMovieIdParam);
+
+  const location = useLocation();
 
   const handleClose = () => {
     setMovieId(null);
@@ -44,43 +52,81 @@ export default function MovieInfo() {
   };
   const getCurrentMovie = async () => {
     if (movieId) {
-      try {
-        const current = await getMovieDetails(movieId);
-        setCurrentMovie(current);
-      } catch (error) {
-        console.log(error);
+      if (location.pathname.includes("/movie/")) {
+        try {
+          const current = await getMovieDetails(movieId);
+          setCurrentMovie(current);
+        } catch (error) {
+          console.log(error);
+        }
+      } else if (location.pathname.includes("/tv/")) {
+        try {
+          const current = await getTVDetails(movieId);
+          setCurrentMovie(current);
+        } catch (error) {
+          console.log(error);
+        }
       }
     }
   };
   const getActors = async () => {
     if (movieId) {
-      try {
-        const credits = await getMovieCredits(movieId);
-        setActors(credits.slice(0, 10));
-      } catch (error) {
-        console.log(error);
+      if (location.pathname.includes("/movie/")) {
+        try {
+          const credits = await getMovieCredits(movieId);
+          setActors(credits.slice(0, 10));
+        } catch (error) {
+          console.log(error);
+        }
+      } else if (location.pathname.includes("/tv/")) {
+        try {
+          const credits = await getTVCredits(movieId);
+          setActors(credits.slice(0, 10));
+        } catch (error) {
+          console.log(error);
+        }
       }
     }
   };
   const getVideos = async () => {
     if (movieId) {
-      try {
-        const videos = await getMovieVideos(movieId);
-        if (videos.length) setVideos(videos);
-        else setVideos(null);
-      } catch (error) {
-        console.log(error);
+      if (location.pathname.includes("/movie/")) {
+        try {
+          const videos = await getMovieVideos(movieId);
+          if (videos.length) setVideos(videos);
+          else setVideos(null);
+        } catch (error) {
+          console.log(error);
+        }
+      } else if (location.pathname.includes("/tv/")) {
+        try {
+          const videos = await getTVVideos(movieId);
+          if (videos.length) setVideos(videos);
+          else setVideos(null);
+        } catch (error) {
+          console.log(error);
+        }
       }
     }
   };
   const getImages = async () => {
     if (movieId) {
-      try {
-        const backdrops = await getMovieImages(movieId);
-        if (backdrops.length) setImages(backdrops);
-        else setImages(null);
-      } catch (error) {
-        console.log(error);
+      if (location.pathname.includes("/movie/")) {
+        try {
+          const backdrops = await getMovieImages(movieId);
+          if (backdrops.length) setImages(backdrops);
+          else setImages(null);
+        } catch (error) {
+          console.log(error);
+        }
+      } else if (location.pathname.includes("/tv/")) {
+        try {
+          const backdrops = await getTVImages(movieId);
+          if (backdrops.length) setImages(backdrops);
+          else setImages(null);
+        } catch (error) {
+          console.log(error);
+        }
       }
     }
   };
@@ -116,20 +162,31 @@ export default function MovieInfo() {
     Kakao.Share.sendDefault({
       objectType: "feed",
       content: {
-        title: `${currentMovie?.title}`,
+        title: location.pathname.includes("/movie/")
+          ? (currentMovie as MovieDetailType)?.title
+          : (currentMovie as TVDetailType)?.name,
         imageUrl:
           `https://image.tmdb.org/t/p/w500/${currentMovie?.poster_path}` || "",
         link: {
-          mobileWebUrl: `http://localhost:5173/movie/${currentMovie?.id}`,
-          webUrl: `http://localhost:5173/movie/${currentMovie?.id}`,
+          mobileWebUrl: location.pathname.includes("/movie/")
+            ? `http://localhost:5173/movie/${currentMovie?.id}`
+            : `http://localhost:5173/tv/${currentMovie?.id}`,
+          webUrl: location.pathname.includes("/movie/")
+            ? `http://localhost:5173/movie/${currentMovie?.id}`
+            : `http://localhost:5173/tv/${currentMovie?.id}`,
         },
       },
       buttons: [
         {
           title: "페이지로 이동",
           link: {
-            mobileWebUrl: `http://localhost:5173/movie/${currentMovie?.id}`,
-            webUrl: `http://localhost:5173/movie/${currentMovie?.id}`,
+            mobileWebUrl: location.pathname.includes("/movie/")
+              ? `http://localhost:5173/movie/${currentMovie?.id}`
+              : `http://localhost:5173/tv/${currentMovie?.id}`,
+
+            webUrl: location.pathname.includes("/movie/")
+              ? `http://localhost:5173/movie/${currentMovie?.id}`
+              : `http://localhost:5173/tv/${currentMovie?.id}`,
           },
         },
       ],
@@ -139,7 +196,10 @@ export default function MovieInfo() {
   // URL이 변경되었을 때 모달 상태 처리
   useEffect(() => {
     const handlePopState = () => {
-      if (!location.pathname.includes("/movie/")) {
+      if (
+        !location.pathname.includes("/movie/") &&
+        !location.pathname.includes("/tv/")
+      ) {
         setMovieModalOpen(false);
         document.body.style.overflow = "auto";
       }
@@ -206,8 +266,24 @@ export default function MovieInfo() {
             </div>
             <div className="flex flex-col gap-4">
               <div>
-                <h2 className="text-[22px]">{currentMovie?.title}</h2>
-                <h3 className="text-[11px]">{currentMovie?.original_title}</h3>
+                {location.pathname.includes("/movie/") ? (
+                  <h2 className="text-[22px]">
+                    {(currentMovie as MovieDetailType)?.title}
+                  </h2>
+                ) : (
+                  <h2 className="text-[22px]">
+                    {(currentMovie as TVDetailType)?.name}
+                  </h2>
+                )}
+                {location.pathname.includes("/movie/") ? (
+                  <h3 className="text-[11px]">
+                    {(currentMovie as MovieDetailType)?.original_title}
+                  </h3>
+                ) : (
+                  <h3 className="text-[11px]">
+                    {(currentMovie as TVDetailType)?.original_name}
+                  </h3>
+                )}
               </div>
               <div>
                 <ul className="flex gap-2">
@@ -231,21 +307,40 @@ export default function MovieInfo() {
                     className="fa-solid fa-star fa-xs mr-1"
                     style={{ color: "#ffffff" }}
                   ></i>
-                  평점 :{currentMovie?.vote_average} / 10
+                  평점 : {currentMovie?.vote_average} / 10
                 </li>
                 <li>
                   <i
                     className="fa-solid fa-film fa-xs mr-1"
                     style={{ color: "#ffffff" }}
                   ></i>
-                  개봉일 : {currentMovie?.release_date}
+                  {location.pathname.includes("/movie/") ? (
+                    <span>
+                      개봉일 : {(currentMovie as MovieDetailType)?.release_date}
+                    </span>
+                  ) : (
+                    <span>
+                      {(currentMovie as TVDetailType)?.first_air_date} ~{" "}
+                      {(currentMovie as TVDetailType)?.last_air_date}
+                    </span>
+                  )}
                 </li>
                 <li>
                   <i
                     className="fa-solid fa-clock-rotate-left fa-xs mr-1"
                     style={{ color: "#ffffff" }}
                   ></i>
-                  런타임 : {currentMovie?.runtime} 분
+                  {location.pathname.includes("/movie/") ? (
+                    <span>
+                      런타임 : {(currentMovie as MovieDetailType)?.runtime} 분
+                    </span>
+                  ) : (
+                    <span>
+                      시즌 {(currentMovie as TVDetailType)?.seasons?.length}개
+                      에피소드{" "}
+                      {(currentMovie as TVDetailType)?.number_of_episodes}개
+                    </span>
+                  )}
                 </li>
               </ul>
             </div>

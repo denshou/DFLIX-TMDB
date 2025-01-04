@@ -5,13 +5,14 @@ import useDebounce from "../hooks/useDebounce";
 import { useNavigate, useParams } from "react-router-dom";
 import { useModal } from "../stores/modalStore";
 import { useParam } from "../stores/paramStore";
-import { getMovies } from "../apis/getMovie";
+import { getMovies, getMoviesWithGenres } from "../apis/getMovie";
 
 import ArrowDown from "../assets/arrow-down.svg";
 import PosterNotFound from "../assets/poster_not_found.svg";
+import { getTVs, getTVsWithGenres } from "../apis/getTV";
 
 export default function Search() {
-  const { movieId, personId, type } = useParams();
+  const { movieId, personId, type, getBy } = useParams();
   const navigate = useNavigate();
 
   const movieModalOpen = useModal((state) => state.movieModalOpen);
@@ -26,9 +27,12 @@ export default function Search() {
 
   const [page, setPage] = useState(1);
 
+  //
   const handlePosterClick = (movieId: number) => {
-    if (type) navigate(`/m/${type}/movie/${movieId}`);
-    else navigate(`/search/movie/${movieId}`);
+    if (getBy) {
+      if (type === "movie") navigate(`/m/${getBy}/movie/${movieId}`);
+      else if (type === "tv") navigate(`/m/${getBy}/tv/${movieId}`);
+    } else navigate(`/search/movie/${movieId}`);
   };
 
   const searchWord = useSearch((state) => state.searchWord);
@@ -71,12 +75,12 @@ export default function Search() {
   }, [personId]);
 
   useEffect(() => {
-    if (!type) setTypeParam(null);
+    if (!getBy) setTypeParam(null);
     else {
-      setTypeParam(type);
+      setTypeParam(getBy);
       setPage(1);
     }
-  }, [type]);
+  }, [getBy]);
 
   const handleMoreButton = () => {
     setPage((prev) => prev + 1);
@@ -97,23 +101,66 @@ export default function Search() {
         } catch (error) {
           console.log(error);
         }
-      } else if (type && page) {
-        try {
-          const nextMovies = await getMovies(type, page);
-          setSearchedMovies((prev) => {
-            const uniqueMovies = nextMovies.filter(
-              (newMovie: MovieType) =>
-                !prev.some((movie) => movie.id === newMovie.id)
-            );
-            return [...prev, ...uniqueMovies];
-          });
-        } catch (error) {
-          console.log(error);
+      } else if (!isNaN(Number(getBy))) {
+        if (type === "movie") {
+          try {
+            const nextMovies = await getMoviesWithGenres(Number(getBy), page);
+            setSearchedMovies((prev) => {
+              const uniqueMovies = nextMovies.filter(
+                (newMovie: MovieType) =>
+                  !prev.some((movie) => movie.id === newMovie.id)
+              );
+              return [...prev, ...uniqueMovies];
+            });
+          } catch (error) {
+            console.log(error);
+          }
+        } else if (type === "tv") {
+          try {
+            const nextMovies = await getTVsWithGenres(Number(getBy), page);
+            setSearchedMovies((prev) => {
+              const uniqueMovies = nextMovies.filter(
+                (newMovie: MovieType) =>
+                  !prev.some((movie) => movie.id === newMovie.id)
+              );
+              return [...prev, ...uniqueMovies];
+            });
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      } else if (getBy) {
+        if (type === "movie") {
+          try {
+            const nextMovies = await getMovies(getBy, page);
+            setSearchedMovies((prev) => {
+              const uniqueMovies = nextMovies.filter(
+                (newMovie: MovieType) =>
+                  !prev.some((movie) => movie.id === newMovie.id)
+              );
+              return [...prev, ...uniqueMovies];
+            });
+          } catch (error) {
+            console.log(error);
+          }
+        } else if (type === "tv") {
+          try {
+            const nextMovies = await getTVs(getBy, page);
+            setSearchedMovies((prev) => {
+              const uniqueMovies = nextMovies.filter(
+                (newMovie: MovieType) =>
+                  !prev.some((movie) => movie.id === newMovie.id)
+              );
+              return [...prev, ...uniqueMovies];
+            });
+          } catch (error) {
+            console.log(error);
+          }
         }
       }
     };
     getNextPage();
-  }, [page, type]);
+  }, [page, getBy]);
 
   return (
     <div className="px-20">

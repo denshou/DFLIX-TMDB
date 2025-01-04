@@ -104,11 +104,7 @@ export default function DetailInfo() {
                   alt=""
                 />
               ) : (
-                <img
-                  src={ProfileNotFound}
-                  className="w-[200px]"
-                  alt=""
-                />
+                <img src={ProfileNotFound} className="w-[200px]" alt="" />
               )}
             </div>
             <div className="flex flex-col gap-2">

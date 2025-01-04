@@ -65,8 +65,10 @@ const CustomNextArrow = (props: any) => {
 
 export default function SlickSlideTrend({
   movieList,
+  type
 }: {
-  movieList: MovieType[];
+  movieList: MovieType[] | TVType[];
+  type:string;
 }) {
   const settings = {
     dots: true,
@@ -103,7 +105,8 @@ export default function SlickSlideTrend({
   ];
 
   const handleSlideClick = (movieId: number) => {
-    navigate(`/movie/${movieId}`);
+    if(type === "movie") navigate(`/movie/${movieId}`);
+    else if( type === "tv")navigate(`/tv/${movieId}`);
     document.body.style.overflow = "hidden";
     setMovieModalOpen(true);
   };
