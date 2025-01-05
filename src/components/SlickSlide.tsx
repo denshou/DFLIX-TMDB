@@ -5,6 +5,7 @@ import ArrowLeft from "../assets/arrow-left.svg";
 import ArrowRight from "../assets/arrow-right.svg";
 import { useModal } from "../stores/modalStore";
 import { useNavigate } from "react-router-dom";
+import PosterNotFound from "../assets/poster_not_found.svg";
 
 const CustomPrevArrow = (props: any) => {
   const { className, style, onClick } = props;
@@ -98,7 +99,11 @@ export default function SlickSlide({
           >
             <div className="flex">
               <img
-                src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                src={
+                  movie.poster_path
+                    ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+                    : PosterNotFound
+                }
                 className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
                 alt="movie-poster"
               />

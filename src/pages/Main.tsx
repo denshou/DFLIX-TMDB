@@ -71,26 +71,25 @@ export default function Main() {
   }, []);
 
   //io
-
+  const [offset, setOffset] = useState(0);
   const lastRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     // IntersectionObserver 등록
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(
-        (entry) => {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
           // 관찰 대상이 viewport 안에 들어온 경우
           if (entry.isIntersecting) {
-            //하단에 컨테이너 추가
-            console.log("hi");
+            setOffset((prev) => prev + 3);
           }
-        },
-        {
-          rootMargin: "0px",
-          threshold: [0.01, 0.1, 1],
-        }
-      );
-    });
+        });
+      },
+      {
+        rootMargin: "600px",
+        threshold: 0,
+      }
+    );
 
     if (lastRef.current) {
       io.observe(lastRef.current); // 마지막 아이템을 관찰
@@ -154,20 +153,17 @@ export default function Main() {
       <main>
         <MovieListContainer type="movie" getBy="trending" />
         <MovieListContainer type="movie" getBy="popular" />
-        <MovieListContainer
-          type="movie"
-          getBy="genres"
-          genreId={28}
-          genreName="액션"
-        />
         <MovieListContainer type="tv" getBy="trending" />
         <MovieListContainer type="tv" getBy="popular" />
-        <MovieListContainer
-          type="tv"
-          getBy="genres"
-          genreId={16}
-          genreName="애니메이션"
-        />
+        {genres.slice(0, offset).map((genre, i) => (
+          <MovieListContainer
+            key={i}
+            type={genre.type}
+            getBy="genres"
+            genreId={genre.id}
+            genreName={genre.name}
+          />
+        ))}
         <div ref={lastRef} className="border border-[#141414]"></div>
       </main>
     </div>
