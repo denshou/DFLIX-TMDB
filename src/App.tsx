@@ -5,7 +5,7 @@ import MovieInfo from "./components/MovieInfo";
 import { useModal } from "./stores/modalStore";
 import DetailInfo from "./components/DetailInfo";
 import SignIn from "./pages/SignIn";
-import KakaoRedirect from "./pages/KakaoRedirect";
+// import KakaoRedirect from "./pages/KakaoRedirect";
 import Search from "./pages/Search";
 import YouTubeModal from "./components/YouTubeModal";
 
@@ -27,7 +27,7 @@ function App() {
           <Route path="/tv/:movieId/videos/:videoId" element={<Main />} />
 
           <Route path="/signin" element={<SignIn />} />
-          <Route path="/auth/kakao/callback" element={<KakaoRedirect />} />
+          {/* <Route path="/auth/kakao/callback" element={<KakaoRedirect />} /> */}
 
           <Route path="/search" element={<Search />} />
           <Route path="/search/movie/:movieId" element={<Search />} />
@@ -38,11 +38,16 @@ function App() {
 
           <Route path="/m/:type/:getBy" element={<Search />} />
           <Route path="/m/:getBy/movie/:movieId" element={<Search />} />
-          <Route path="/m/:getBy/movie/:movieId/person/:personId" element={<Search />} />
+          <Route
+            path="/m/:getBy/movie/:movieId/person/:personId"
+            element={<Search />}
+          />
 
           <Route path="/m/:getBy/tv/:movieId" element={<Search />} />
-          <Route path="/m/:getBy/tv/:movieId/person/:personId" element={<Search />} />
-
+          <Route
+            path="/m/:getBy/tv/:movieId/person/:personId"
+            element={<Search />}
+          />
         </Route>
       </Routes>
       {movieModalOpen && <MovieInfo />}

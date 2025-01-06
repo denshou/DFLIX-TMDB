@@ -1,41 +1,46 @@
 import { Link, useNavigate } from "react-router-dom";
 import Search from "../assets/search.svg";
 import { useEffect, useRef, useState } from "react";
-import { getAuth, signOut, User } from "firebase/auth";
+// import { getAuth, signOut, User } from "firebase/auth";
 import { useSearch } from "../stores/searchStore";
+import { createTMDBSession, getTMDBRequestToken } from "../services/tmdb";
+import { axiosInstance } from "../apis";
+import ProfileNotFound from "../assets/profile_not_found.svg";
 
 export default function Header() {
   const navigate = useNavigate();
 
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<TMDBUserType | null>(null);
 
-  const handleLoginButton = () => {
-    navigate("/signin");
-  };
-  const handleLogoutButton = () => {
-    const response = window.confirm("로그아웃 하시겠습니까?");
-    if (user && response) {
-      // 로그아웃
-      const auth = getAuth();
-      signOut(auth)
-        .then(() => {
-          console.log("로그아웃 성공");
-          setUser(null);
-        })
-        .catch((error) => {
-          console.error("로그아웃 실패", error);
-        });
-    }
-  };
+  // const [user, setUser] = useState<User | null>(null);
 
-  useEffect(() => {
-    const auth = getAuth(); // Firebase 인증 객체
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setUser(user); // 사용자 정보 업데이트
-    });
+  // const handleLoginButton = () => {
+  //   navigate("/signin");
+  // };
+  // const handleLogoutButton = () => {
+  //   const response = window.confirm("로그아웃 하시겠습니까?");
+  //   if (user && response) {
+  //     // 로그아웃
+  //     const auth = getAuth();
+  //     signOut(auth)
+  //       .then(() => {
+  //         console.log("로그아웃 성공");
+  //         setUser(null);
+  //       })
+  //       .catch((error) => {
+  //         console.error("로그아웃 실패", error);
+  //       });
+  //   }
+  // };
 
-    return () => unsubscribe();
-  }, []);
+  // useEffect(() => {
+  //   const auth = getAuth(); // Firebase 인증 객체
+  //   const unsubscribe = auth.onAuthStateChanged((user) => {
+  //     setUser(user); // 사용자 정보 업데이트
+  //   });
+
+  //   return () => unsubscribe();
+  // }, []);
 
   //검색 기능
 
@@ -73,6 +78,52 @@ export default function Header() {
     navigate(`/search?q=${searchWord}`);
   };
 
+  const handleLogoutButton = () => {
+    const response = window.confirm("로그아웃 하시겠습니까?");
+    if (user && response) {
+      // 로그아웃
+      setUser(null);
+      localStorage.removeItem("requestToken");
+      localStorage.removeItem("sessionId");
+    }
+  };
+
+  const handleTMDBIntegration = async () => {
+    await getTMDBRequestToken();
+  };
+
+  useEffect(() => {
+    const requestToken = localStorage.getItem("requestToken");
+    const sessionId = localStorage.getItem("sessionId");
+    if (!requestToken) return;
+
+    const getAccountDetail = async (sessionId: string) => {
+      try {
+        const response = await axiosInstance.get(
+          `/account?api_key=7795ca04141147370cffadf1c976edd4&session_id=${sessionId}`
+        );
+        const userData = response.data;
+        if (userData) setUser(userData); // 사용자 정보 업데이트
+      } catch (error) {
+        console.error("Failed to get account details:", error);
+      }
+    };
+
+    const getSessionId = async () => {
+      if (!sessionId) {
+        const newSessionId = await createTMDBSession(requestToken);
+        if (newSessionId) {
+          localStorage.setItem("sessionId", newSessionId);
+          await getAccountDetail(newSessionId); // 새로운 세션 ID로 사용자 정보 가져오기
+        }
+      } else {
+        await getAccountDetail(sessionId); // 기존 sessionId가 있으면 바로 사용자 정보 가져옴
+      }
+    };
+
+    getSessionId();
+  }, []);
+
   return (
     <div className="flex justify-center items-center h-[70px]">
       <div className="flex justify-between  items-center w-[90%]">
@@ -106,7 +157,7 @@ export default function Header() {
             </button>
           )}
 
-          {user ? (
+          {/* {user ? (
             <div className="flex items-center relative group">
               <div className="w-11 rounded-full overflow-hidden">
                 <img src={user.photoURL || ""} alt="" />
@@ -133,6 +184,46 @@ export default function Header() {
               type="button"
               className="border p-2 rounded-md"
               onClick={handleLoginButton}
+            >
+              로그인
+            </button>
+          )} */}
+
+          {user ? (
+            <div className="flex items-center relative group">
+              <div className="w-11 h-11 rounded-full overflow-hidden">
+                <img
+                  src={
+                    user.avatar.tmdb.avatar_path
+                      ? `https://image.tmdb.org/t/p/w500${user.avatar.tmdb.avatar_path}`
+                      : ProfileNotFound
+                  }
+                  className="object-cover w-full h-full"
+                  alt=""
+                />
+              </div>
+              <p className="ml-2">{user.username} 님</p>
+              <i
+                className="fa-solid fa-caret-down ml-2"
+                style={{ color: "#ffffff" }}
+              ></i>
+
+              <div className="absolute top-[44px] w-full h-[6px]"></div>
+
+              <div className="absolute top-[50px] w-full bg-[black] z-[10] border rounded-md cursor-pointer group-hover:block hidden group-focus-within::block">
+                <ul className="w-full divide-y">
+                  <li className="text-center py-1">설정</li>
+                  <li className="text-center py-1" onClick={handleLogoutButton}>
+                    로그아웃
+                  </li>
+                </ul>
+              </div>
+            </div>
+          ) : (
+            <button
+              type="button"
+              className="border p-2 rounded-md"
+              onClick={handleTMDBIntegration}
             >
               로그인
             </button>
