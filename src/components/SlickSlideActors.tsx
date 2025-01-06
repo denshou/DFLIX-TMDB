@@ -7,6 +7,7 @@ import ProfileNotFound from "../assets/profile_not_found.svg";
 import { useModal } from "../stores/modalStore";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useParam } from "../stores/paramStore";
+import { useAuth } from "../stores/authStore";
 
 const CustomPrevArrow = (props: any) => {
   const { className, style, onClick } = props;
@@ -74,13 +75,20 @@ export default function SlickSlideActors({ actors }: { actors: ActorType[] }) {
   };
   const navigate = useNavigate();
   const location = useLocation();
+  const user = useAuth((state) => state.user);
 
   const setDetailModalOpen = useModal((state) => state.setDetailModalOpen);
   const movieId = useParam((state) => state.movieIdParam);
   const type = useParam((state) => state.typeParam);
 
   const handleSlideClick = (actorId: number) => {
-    if (location.pathname.includes("search"))
+    if (location.pathname.includes("/user/") && user) {
+      console.log(user);
+      if (location.pathname.includes("/movie/"))
+        navigate(`/user/${user.id}/movie/${movieId}/person/${actorId}`);
+      else navigate(`/user/${user.id}/tv/${movieId}/person/${actorId}`);
+    }
+    else if (location.pathname.includes("search"))
       navigate(`/search/movie/${movieId}/person/${actorId}`);
     else if (location.pathname.includes("/m/")) {
       if (location.pathname.includes("/movie/"))

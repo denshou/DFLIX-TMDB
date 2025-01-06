@@ -6,11 +6,14 @@ import { useSearch } from "../stores/searchStore";
 import { createTMDBSession, getTMDBRequestToken } from "../services/tmdb";
 import { axiosInstance } from "../apis";
 import ProfileNotFound from "../assets/profile_not_found.svg";
+import { useAuth } from "../stores/authStore";
 
 export default function Header() {
   const navigate = useNavigate();
 
-  const [user, setUser] = useState<TMDBUserType | null>(null);
+  // const [user, setUser] = useState<TMDBUserType | null>(null);
+  const user = useAuth((state) => state.user);
+  const setUser = useAuth((state) => state.setUser);
 
   // const [user, setUser] = useState<User | null>(null);
 
@@ -76,6 +79,14 @@ export default function Header() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     navigate(`/search?q=${searchWord}`);
+  };
+
+  const handleMyPageButton = () => {
+    if (!user) {
+      window.alert("로그인 해주세요.");
+      return;
+    }
+    navigate(`/user/${user.id}`);
   };
 
   const handleLogoutButton = () => {
@@ -212,7 +223,9 @@ export default function Header() {
 
               <div className="absolute top-[50px] w-full bg-[black] z-[10] border rounded-md cursor-pointer group-hover:block hidden group-focus-within::block">
                 <ul className="w-full divide-y">
-                  <li className="text-center py-1">설정</li>
+                  <li className="text-center py-1" onClick={handleMyPageButton}>
+                    마이페이지
+                  </li>
                   <li className="text-center py-1" onClick={handleLogoutButton}>
                     로그아웃
                   </li>

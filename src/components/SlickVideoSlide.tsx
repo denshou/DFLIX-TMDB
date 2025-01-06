@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import "@fancyapps/ui/dist/fancybox/fancybox.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useParam } from "../stores/paramStore";
+import { useAuth } from "../stores/authStore";
 
 const CustomPrevArrow = (props: any) => {
   const { className, style, onClick } = props;
@@ -82,8 +83,14 @@ export default function SlickVideoSlide({
     ),
   };
 
+  const user = useAuth((state) => state.user);
+
   const handleImageClick = (videoKey: string) => {
-    if (location.pathname.includes("/movie/")) {
+    if (location.pathname.includes("/user/")&&user) {
+      if (location.pathname.includes("/movie/"))
+        navigate(`/user/${user.id}/movie/${movieId}/videos/${videoKey}`);
+      else navigate(`/user/${user.id}/tv/${movieId}/videos/${videoKey}`);
+    } else if (location.pathname.includes("/movie/")) {
       navigate(`/movie/${movieId}/videos/${videoKey}`);
     } else navigate(`/tv/${movieId}/videos/${videoKey}`);
   };

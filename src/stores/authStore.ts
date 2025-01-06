@@ -1,21 +1,14 @@
-// import { create } from "zustand";
+import { create } from "zustand";
 
-// type AuthStoreType = {
-//     movieModalOpen: boolean;
-//     setMovieModalOpen: (bool: boolean) => void;
-//     detailModalOpen: boolean;
-//     setDetailModalOpen: (bool: boolean) => void;
-//   };
+type AuthStoreType = {
+  user: TMDBUserType | null;
+  setUser: (user: TMDBUserType | null) => void;
+};
 
-// export const useAuth = create<AuthStoreType>((set) => ({
-//   movieModalOpen: false,
-//   setMovieModalOpen: (bool) =>
-//     set(() => ({
-//       movieModalOpen: bool,
-//     })),
-//   detailModalOpen: false,
-//   setDetailModalOpen: (bool) =>
-//     set(() => ({
-//       detailModalOpen: bool,
-//     })),
-// }));
+export const useAuth = create<AuthStoreType>((set) => ({
+  user: null,
+  setUser: (user) =>
+    set(() => ({
+      user: user,
+    })),
+}));

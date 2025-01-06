@@ -7,10 +7,14 @@ import { useParam } from "../stores/paramStore";
 import ProfileNotFound from "../assets/profile_not_found.svg";
 
 import { getPersonDetails, getPersonMovieCredits } from "../apis/getPerson";
+import { useAuth } from "../stores/authStore";
 
 export default function DetailInfo() {
   const navigate = useNavigate();
 
+  const user = useAuth((state) => state.user);
+
+  const movieModalOpen = useModal((state) => state.movieModalOpen);
   const setDetailModalOpen = useModal((state) => state.setDetailModalOpen);
 
   const personId = useParam((state) => state.personIdParam);
@@ -24,6 +28,7 @@ export default function DetailInfo() {
   >(null);
 
   const handleClose = () => {
+    if (!movieModalOpen) document.body.style.overflow = "auto";
     setPersonId(null);
     setDetailModalOpen(false);
     navigate(-1);
@@ -51,7 +56,9 @@ export default function DetailInfo() {
   };
 
   const handlePosterClick = (movieId: number) => {
-    if (location.pathname.includes("search"))
+    if (location.pathname.includes("/user/") && user) {
+      navigate(`/user/${user.id}/movie/${movieId}`);
+    } else if (location.pathname.includes("search"))
       navigate(`/search/movie/${movieId}`);
     else navigate(`/movie/${movieId}`);
     setDetailModalOpen(false);

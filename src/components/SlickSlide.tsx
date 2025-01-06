@@ -4,8 +4,9 @@ import "slick-carousel/slick/slick-theme.css";
 import ArrowLeft from "../assets/arrow-left.svg";
 import ArrowRight from "../assets/arrow-right.svg";
 import { useModal } from "../stores/modalStore";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import PosterNotFound from "../assets/poster_not_found.svg";
+import { useAuth } from "../stores/authStore";
 
 const CustomPrevArrow = (props: any) => {
   const { className, style, onClick } = props;
@@ -78,15 +79,47 @@ export default function SlickSlide({
     ),
   };
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const user = useAuth((state) => state.user);
 
   const setMovieModalOpen = useModal((state) => state.setMovieModalOpen);
 
   const handleSlideClick = (movieId: number) => {
-    if (type === "movie") navigate(`/movie/${movieId}`);
+    if (location.pathname.includes("/user/")&&user) {
+      if (type === "movie") navigate(`/user/${user.id}/movie/${movieId}`);
+      else if (type === "tv") navigate(`/user/${user.id}/tv/${movieId}`);
+    } else if (type === "movie") navigate(`/movie/${movieId}`);
     else if (type === "tv") navigate(`/tv/${movieId}`);
     document.body.style.overflow = "hidden";
     setMovieModalOpen(true);
   };
+
+  if (movieList.length < 10) {
+    return (
+      <div className="w-[90%] grid grid-cols-9 gap-2">
+        {movieList.map((movie) => (
+          <div
+            key={movie.id}
+            className="cursor-pointer"
+            onClick={() => handleSlideClick(movie.id)}
+          >
+            <div className="flex">
+              <img
+                src={
+                  movie.poster_path
+                    ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+                    : PosterNotFound
+                }
+                className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
+                alt="movie-poster"
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="w-[90%] list-slider">

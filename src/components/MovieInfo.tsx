@@ -20,11 +20,14 @@ import {
   getTVImages,
   getTVVideos,
 } from "../apis/getTV";
+import { useAuth } from "../stores/authStore";
+import { addFavorite, addWatchlist } from "../apis/tmdbApi";
 
 const { Kakao } = window;
 
 export default function MovieInfo() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [currentMovie, setCurrentMovie] = useState<
     MovieDetailType | TVDetailType | null
@@ -36,7 +39,7 @@ export default function MovieInfo() {
   const movieId = useParam((state) => state.movieIdParam);
   const setMovieId = useParam((state) => state.setMovieIdParam);
 
-  const location = useLocation();
+  const user = useAuth((state) => state.user);
 
   const handleClose = () => {
     setMovieId(null);
@@ -193,6 +196,28 @@ export default function MovieInfo() {
     });
   };
 
+  const handleAddFavorite = async () => {
+    if (!user) {
+      window.alert("로그인을 해주세요");
+      return;
+    }
+    if (location.pathname.includes("/movie/"))
+      await addFavorite(user?.id!, "movie", currentMovie?.id!);
+    else if (location.pathname.includes("/tv/"))
+      await addFavorite(user?.id!, "tv", currentMovie?.id!);
+  };
+  const handleAddWatchlist = async () => {
+    if (!user) {
+      window.alert("로그인을 해주세요");
+      return;
+    }
+
+    if (location.pathname.includes("/movie/"))
+      await addWatchlist(user?.id!, "movie", currentMovie?.id!);
+    else if (location.pathname.includes("/tv/"))
+      await addWatchlist(user?.id!, "tv", currentMovie?.id!);
+  };
+
   // URL이 변경되었을 때 모달 상태 처리
   useEffect(() => {
     const handlePopState = () => {
@@ -343,6 +368,20 @@ export default function MovieInfo() {
                   )}
                 </li>
               </ul>
+              <button
+                type="button"
+                onClick={handleAddFavorite}
+                className=" border"
+              >
+                add favorite
+              </button>
+              <button
+                type="button"
+                onClick={handleAddWatchlist}
+                className=" border"
+              >
+                add watchlist
+              </button>
             </div>
           </div>
           <button
