@@ -206,11 +206,11 @@ export default function MovieInfo() {
           `https://image.tmdb.org/t/p/w500/${currentMovie?.poster_path}` || "",
         link: {
           mobileWebUrl: location.pathname.includes("/movie/")
-            ? `http://localhost:5173/movie/${currentMovie?.id}`
-            : `http://localhost:5173/tv/${currentMovie?.id}`,
+            ? `${import.meta.env.VITE_PUBLIC_URL}/movie/${currentMovie?.id}`
+            : `${import.meta.env.VITE_PUBLIC_URL}/tv/${currentMovie?.id}`,
           webUrl: location.pathname.includes("/movie/")
-            ? `http://localhost:5173/movie/${currentMovie?.id}`
-            : `http://localhost:5173/tv/${currentMovie?.id}`,
+            ? `${import.meta.env.VITE_PUBLIC_URL}/movie/${currentMovie?.id}`
+            : `${import.meta.env.VITE_PUBLIC_URL}/tv/${currentMovie?.id}`,
         },
       },
       buttons: [
@@ -218,12 +218,12 @@ export default function MovieInfo() {
           title: "페이지로 이동",
           link: {
             mobileWebUrl: location.pathname.includes("/movie/")
-              ? `http://localhost:5173/movie/${currentMovie?.id}`
-              : `http://localhost:5173/tv/${currentMovie?.id}`,
+              ? `${import.meta.env.VITE_PUBLIC_URL}/movie/${currentMovie?.id}`
+              : `${import.meta.env.VITE_PUBLIC_URL}/tv/${currentMovie?.id}`,
 
             webUrl: location.pathname.includes("/movie/")
-              ? `http://localhost:5173/movie/${currentMovie?.id}`
-              : `http://localhost:5173/tv/${currentMovie?.id}`,
+              ? `${import.meta.env.VITE_PUBLIC_URL}/movie/${currentMovie?.id}`
+              : `${import.meta.env.VITE_PUBLIC_URL}/tv/${currentMovie?.id}`,
           },
         },
       ],
@@ -327,7 +327,7 @@ export default function MovieInfo() {
 
   useEffect(() => {
     if (!window.Kakao.isInitialized()) {
-      window.Kakao.init("94330ec1fd217b86d3aec285df24bfb5");
+      window.Kakao.init(`${import.meta.env.VITE_KAKAO_JAVASCRIPT_KEY}`);
     }
   }, []);
 
@@ -359,15 +359,15 @@ export default function MovieInfo() {
           )}
           <div className="flex gap-5">
             <div className="rounded-lg overflow-hidden">
-              {currentMovie?.poster_path ? (
-                <img
-                  src={`https://image.tmdb.org/t/p/w500/${currentMovie?.poster_path}`}
-                  className="w-[200px]"
-                  alt=""
-                />
-              ) : (
-                <img src={PosterNotFound} className="w-[200px]" alt="" />
-              )}
+              <img
+                src={
+                  currentMovie?.poster_path
+                    ? `https://image.tmdb.org/t/p/w500/${currentMovie?.poster_path}`
+                    : PosterNotFound
+                }
+                className="w-[200px]"
+                alt=""
+              />
             </div>
             <div className="flex flex-col gap-4">
               <div>
@@ -460,12 +460,12 @@ export default function MovieInfo() {
                 >
                   {currentMovie && favoriteIds?.includes(currentMovie?.id) ? (
                     <i
-                      className="fa-solid fa-heart ml-[1px]"
+                      className="fa-solid fa-heart mt-[1px]"
                       style={{ color: "#F44336" }}
                     ></i>
                   ) : (
                     <i
-                      className="fa-regular fa-heart ml-[1px]"
+                      className="fa-regular fa-heart mt-[1px]"
                       style={{ color: "#ffffff" }}
                     ></i>
                   )}
@@ -482,12 +482,12 @@ export default function MovieInfo() {
                 >
                   {currentMovie && watchlistIds?.includes(currentMovie?.id) ? (
                     <i
-                      className="fa-solid fa-check ml-[1px]"
+                      className="fa-solid fa-check"
                       style={{ color: "#ffffff" }}
                     ></i>
                   ) : (
                     <i
-                      className="fa-solid fa-plus ml-[1px]"
+                      className="fa-solid fa-plus"
                       style={{ color: "#ffffff" }}
                     ></i>
                   )}

@@ -18,7 +18,7 @@
 
 //   useEffect(() => {
 //     if (!window.Kakao.isInitialized()) {
-//       window.Kakao.init("94330ec1fd217b86d3aec285df24bfb5");
+//       window.Kakao.init(`{import.meta.env.VITE_KAKAO_JAVASCRIPT_KEY}`);
 //     }
 //   }, []);
 
@@ -29,7 +29,7 @@
 //           const payload = {
 //             grant_type: "authorization_code",
 //             client_id: "7aaa3cd36557e8fd96c25af4b1bf38f2", // 카카오 REST API 키
-//             redirect_uri: "http://localhost:5173/auth/kakao/callback", // 리디렉트 URI
+//             redirect_uri: `${import.meta.env.VITE_PUBLIC_URL}/auth/kakao/callback`, // 리디렉트 URI
 //             code, // 전달받은 인가 코드
 //             client_secret: "C4LL27KheNmNB9fBo7T6EdvSgm40fsko", // 카카오 Client Secret
 //           };

@@ -111,7 +111,9 @@ export default function Header() {
     const getAccountDetail = async (sessionId: string) => {
       try {
         const response = await axiosInstance.get(
-          `/account?api_key=7795ca04141147370cffadf1c976edd4&session_id=${sessionId}`
+          `/account?api_key=${
+            import.meta.env.VITE_TMDB_API_KEY
+          }&session_id=${sessionId}`
         );
         const userData = response.data;
         if (userData) setUser(userData); // 사용자 정보 업데이트

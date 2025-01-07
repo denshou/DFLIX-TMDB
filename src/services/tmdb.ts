@@ -9,7 +9,7 @@ export const getTMDBRequestToken = async (): Promise<string | undefined> => {
 
     if (response.data.success) {
       const requestToken: string = response.data.request_token;
-      const authenticationUrl = `https://www.themoviedb.org/authenticate/${requestToken}?redirect_to=http://localhost:5173`;
+      const authenticationUrl = `https://www.themoviedb.org/authenticate/${requestToken}?redirect_to=${import.meta.env.VITE_PUBLIC_URL}`;
 
       // 사용자 인증을 위해 TMDB 인증 페이지로 리디렉션
       window.location.href = authenticationUrl;

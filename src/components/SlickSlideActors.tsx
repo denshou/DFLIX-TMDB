@@ -109,19 +109,13 @@ export default function SlickSlideActors({ actors }: { actors: ActorType[] }) {
           <div key={actor.id} onClick={() => handleSlideClick(actor.id)}>
             <div className="flex flex-col items-center">
               <div className="w-[72px] h-[72px] rounded-full overflow-hidden">
-                {actor.profile_path ? (
+                
                   <img
-                    src={`https://image.tmdb.org/t/p/w500/${actor.profile_path}`}
+                    src={actor.profile_path ? `https://image.tmdb.org/t/p/w500/${actor.profile_path}` : ProfileNotFound}
                     className="w-[72px] h-[72px] object-cover"
                     alt=""
                   />
-                ) : (
-                  <img
-                    src={ProfileNotFound}
-                    className="w-[72px] h-[72px] object-cover"
-                    alt=""
-                  />
-                )}
+                
               </div>
               <p className="text-center text-[12px] break-keep">{actor.name}</p>
               <p className="text-center text-[10px] text-[#999999]">
