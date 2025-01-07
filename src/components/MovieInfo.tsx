@@ -21,7 +21,16 @@ import {
   getTVVideos,
 } from "../apis/getTV";
 import { useAuth } from "../stores/authStore";
-import { addFavorite, addWatchlist } from "../apis/tmdbApi";
+import {
+  addFavorite,
+  addWatchlist,
+  deleteFavorite,
+  deleteWatchlist,
+  getFavoriteMovies,
+  getFavoriteTVs,
+  getWatchlistMovies,
+  getWatchlistTVs,
+} from "../apis/tmdbApi";
 
 const { Kakao } = window;
 
@@ -39,7 +48,32 @@ export default function MovieInfo() {
   const movieId = useParam((state) => state.movieIdParam);
   const setMovieId = useParam((state) => state.setMovieIdParam);
 
+  const [favoriteIds, setFavoriteIds] = useState<number[] | null>(null);
+  const [watchlistIds, setWatchlistIds] = useState<number[] | null>(null);
+
   const user = useAuth((state) => state.user);
+
+  useEffect(() => {
+    const getUserFavorite = async () => {
+      if (!user) return;
+      if (location.pathname.includes("/movie/")) {
+        const fm = await getFavoriteMovies(user.id);
+        const wm = await getWatchlistMovies(user.id);
+        const fmIds = fm.map((movie: MovieType) => movie.id);
+        const wmIds = wm.map((movie: MovieType) => movie.id);
+        setFavoriteIds(fmIds);
+        setWatchlistIds(wmIds);
+      } else if (location.pathname.includes("/tv/")) {
+        const ft = await getFavoriteTVs(user.id);
+        const wt = await getWatchlistTVs(user.id);
+        const ftIds = ft.map((tv: TVType) => tv.id);
+        const wtIds = wt.map((tv: TVType) => tv.id);
+        setFavoriteIds(ftIds);
+        setWatchlistIds(wtIds);
+      }
+    };
+    getUserFavorite();
+  }, [currentMovie]);
 
   const handleClose = () => {
     setMovieId(null);
@@ -201,21 +235,67 @@ export default function MovieInfo() {
       window.alert("로그인을 해주세요");
       return;
     }
+    if (!currentMovie) return;
+
     if (location.pathname.includes("/movie/"))
       await addFavorite(user?.id!, "movie", currentMovie?.id!);
     else if (location.pathname.includes("/tv/"))
       await addFavorite(user?.id!, "tv", currentMovie?.id!);
+
+    setFavoriteIds((prev) =>
+      prev ? [...prev, currentMovie.id] : [currentMovie.id]
+    );
   };
   const handleAddWatchlist = async () => {
     if (!user) {
       window.alert("로그인을 해주세요");
       return;
     }
+    if (!currentMovie) return;
 
     if (location.pathname.includes("/movie/"))
       await addWatchlist(user?.id!, "movie", currentMovie?.id!);
     else if (location.pathname.includes("/tv/"))
       await addWatchlist(user?.id!, "tv", currentMovie?.id!);
+
+    setWatchlistIds((prev) =>
+      prev ? [...prev, currentMovie.id] : [currentMovie.id]
+    );
+  };
+
+  const handleDeleteFavorite = async () => {
+    if (!user) {
+      window.alert("로그인을 해주세요");
+      return;
+    }
+    if (!currentMovie) return;
+    if (!favoriteIds) return;
+
+    if (location.pathname.includes("/movie/"))
+      await deleteFavorite(user?.id!, "movie", currentMovie?.id!);
+    else if (location.pathname.includes("/tv/"))
+      await deleteFavorite(user?.id!, "tv", currentMovie?.id!);
+
+    setFavoriteIds((prev) =>
+      prev ? prev.filter((id) => id !== currentMovie.id) : []
+    );
+  };
+  const handleDeleteWatchlist = async () => {
+    if (!user) {
+      window.alert("로그인을 해주세요");
+      return;
+    }
+    if (!currentMovie) return;
+    if (!watchlistIds) return;
+
+    if (location.pathname.includes("/movie/"))
+      await deleteWatchlist(user?.id!, "movie", currentMovie?.id!);
+    else if (location.pathname.includes("/tv/"))
+      await deleteWatchlist(user?.id!, "tv", currentMovie?.id!);
+
+    setWatchlistIds((prev) =>
+      prev ? prev.filter((id) => id !== currentMovie.id) : []
+    );
   };
 
   // URL이 변경되었을 때 모달 상태 처리
@@ -370,17 +450,30 @@ export default function MovieInfo() {
               </ul>
               <button
                 type="button"
-                onClick={handleAddFavorite}
-                className=" border"
+                onClick={
+                  currentMovie && favoriteIds?.includes(currentMovie?.id)
+                    ? handleDeleteFavorite // 삭제 기능
+                    : handleAddFavorite // 추가 기능
+                }
+                className="border"
               >
-                add favorite
+                {currentMovie && favoriteIds?.includes(currentMovie?.id)
+                  ? "Delete Favorite"
+                  : "Add Favorite"}
               </button>
+
               <button
                 type="button"
-                onClick={handleAddWatchlist}
-                className=" border"
+                onClick={
+                  currentMovie && watchlistIds?.includes(currentMovie?.id)
+                    ? handleDeleteWatchlist // 삭제 기능
+                    : handleAddWatchlist // 추가 기능
+                }
+                className="border"
               >
-                add watchlist
+                {currentMovie && watchlistIds?.includes(currentMovie?.id)
+                  ? "Delete Watchlist"
+                  : "Add Watchlist"}
               </button>
             </div>
           </div>
