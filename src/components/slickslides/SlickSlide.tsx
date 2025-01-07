@@ -1,21 +1,12 @@
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import ArrowLeft from "../assets/arrow-left.svg";
-import ArrowRight from "../assets/arrow-right.svg";
-import { useModal } from "../stores/modalStore";
-import { useNavigate } from "react-router-dom";
-
-import One from "../assets/1.svg";
-import Two from "../assets/2.svg";
-import Three from "../assets/3.svg";
-import Four from "../assets/4.svg";
-import Five from "../assets/5.svg";
-import Six from "../assets/6.svg";
-import Seven from "../assets/7.svg";
-import Eight from "../assets/8.svg";
-import Nine from "../assets/9.svg";
-import Ten from "../assets/10.svg";
+import ArrowLeft from "@assets/arrow-left.svg";
+import ArrowRight from "@assets/arrow-right.svg";
+import { useModal } from "@stores/modalStore";
+import { useLocation, useNavigate } from "react-router-dom";
+import PosterNotFound from "@assets/poster_not_found.svg";
+import { useAuth } from "@stores/authStore";
 
 const CustomPrevArrow = (props: any) => {
   const { className, style, onClick } = props;
@@ -63,19 +54,19 @@ const CustomNextArrow = (props: any) => {
   );
 };
 
-export default function SlickSlideTrend({
+export default function SlickSlide({
   movieList,
-  type
+  type,
 }: {
-  movieList: MovieType[] | TVType[];
-  type:string;
+  movieList: MovieType[] | TVType[] | PersonMovieCreditType[];
+  type: string;
 }) {
   const settings = {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 6,
-    slidesToScroll: 6,
+    slidesToShow: 9,
+    slidesToScroll: 9,
     prevArrow: <CustomPrevArrow />,
     nextArrow: <CustomNextArrow />,
     swipe: false,
@@ -88,51 +79,72 @@ export default function SlickSlideTrend({
     ),
   };
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const user = useAuth((state) => state.user);
 
   const setMovieModalOpen = useModal((state) => state.setMovieModalOpen);
 
-  const numberIcons = [
-    One,
-    Two,
-    Three,
-    Four,
-    Five,
-    Six,
-    Seven,
-    Eight,
-    Nine,
-    Ten,
-  ];
-
   const handleSlideClick = (movieId: number) => {
-    if(type === "movie") navigate(`/movie/${movieId}`);
-    else if( type === "tv")navigate(`/tv/${movieId}`);
+    let targetPath = "";
+
+    if (location.pathname.includes("/user/") && user) {
+      targetPath =
+        type === "movie"
+          ? `/user/${user.id}/movie/${movieId}`
+          : `/user/${user.id}/tv/${movieId}`;
+    } else {
+      targetPath = type === "movie" ? `/movie/${movieId}` : `/tv/${movieId}`;
+    }
+    navigate(targetPath);
+
     document.body.style.overflow = "hidden";
     setMovieModalOpen(true);
   };
 
-  return (
-    <div className="w-[90%] list-slider">
-      <Slider {...settings}>
-        {movieList.map((movie, index) => (
+  if (movieList.length < 10) {
+    return (
+      <div className="w-[90%] grid grid-cols-9 gap-2">
+        {movieList.map((movie) => (
           <div
             key={movie.id}
             className="cursor-pointer"
             onClick={() => handleSlideClick(movie.id)}
           >
-            {/* 포스터 이미지 */}
-            <div className="relative flex justify-end aspect-[4/3]">
-              {/* 숫자 아이콘 */}
-              <div className="-z-[1]">
-                <img
-                  src={numberIcons[index]}
-                  className="h-full translate-x-5"
-                  alt={`number-${index + 1}`}
-                />
-              </div>
+            <div className="flex">
               <img
-                src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                className="object-cover rounded-[4px] aspect-[2/3]"
+                src={
+                  movie.poster_path
+                    ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+                    : PosterNotFound
+                }
+                className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
+                alt="movie-poster"
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-[90%] list-slider">
+      <Slider {...settings}>
+        {movieList.map((movie) => (
+          <div
+            key={movie.id}
+            className="cursor-pointer"
+            onClick={() => handleSlideClick(movie.id)}
+          >
+            <div className="flex">
+              <img
+                src={
+                  movie.poster_path
+                    ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+                    : PosterNotFound
+                }
+                className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
                 alt="movie-poster"
               />
             </div>

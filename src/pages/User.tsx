@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../stores/authStore";
+import { useAuth } from "@stores/authStore";
 import {
   getFavoriteMovies,
   getFavoriteTVs,
   getWatchlistMovies,
   getWatchlistTVs,
-} from "../apis/tmdbApi";
-import SlickSlide from "../components/SlickSlide";
+} from "@apis/tmdbApi";
+import SlickSlide from "@components/slickslides/SlickSlide";
 import { useParams } from "react-router-dom";
-import { useModal } from "../stores/modalStore";
-import { useParam } from "../stores/paramStore";
+import { useModal } from "@stores/modalStore";
+import { useParam } from "@stores/paramStore";
 // import ArrowRight from "../assets/arrow-right.svg";
 
 export default function User() {
@@ -88,22 +88,14 @@ export default function User() {
     if (videoId && !youtubeModalOpen) setYoutubeModalOpen(true);
   }, [videoId]);
 
-
-
   return (
     <>
+      {/* //컴포넌트로 분리 */}
       {/* favorite movies */}
       <div className="list-container mb-10">
         <div className="flex justify-center">
           <h2 className="text-[1.4vw] flex mb-2 w-[90%]">
             <p className="cursor-pointer">Favorite Movies</p>
-            {/* <div
-            className="flex items-center ml-3 cursor-pointer"
-            onClick={handleMoreClick}
-          >
-            <div className="text-[.9vw]">모두 보기</div>
-            <img src={ArrowRight} className="w-[1vw] mt-1" alt="" />
-          </div> */}
           </h2>
         </div>
         <div className="flex flex-col items-center">

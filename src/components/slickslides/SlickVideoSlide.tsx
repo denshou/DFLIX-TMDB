@@ -1,12 +1,14 @@
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import ArrowLeft from "../assets/arrow-left.svg";
-import ArrowRight from "../assets/arrow-right.svg";
+import ArrowLeft from "@assets/arrow-left.svg";
+import ArrowRight from "@assets/arrow-right.svg";
 import { useEffect } from "react";
 
-import { Fancybox } from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox/fancybox.css";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useParam } from "@stores/paramStore";
+import { useAuth } from "@stores/authStore";
 
 const CustomPrevArrow = (props: any) => {
   const { className, style, onClick } = props;
@@ -54,17 +56,21 @@ const CustomNextArrow = (props: any) => {
   );
 };
 
-export default function SlickImageSlide({
-  imageList,
+export default function SlickVideoSlide({
+  videoList,
 }: {
-  imageList: MovieImageType[];
+  videoList: MovieVideoType[];
 }) {
+  const navigate = useNavigate();
+  const movieId = useParam((state) => state.movieIdParam);
+  const location = useLocation();
+
   const settings = {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 4,
+    slidesToShow: 2,
+    slidesToScroll: 2,
     prevArrow: <CustomPrevArrow />,
     nextArrow: <CustomNextArrow />,
     swipe: false,
@@ -77,40 +83,45 @@ export default function SlickImageSlide({
     ),
   };
 
-  const handleImageClick = (imageUrl: string) => {
-    // Fancybox.show()를 사용하여 이미지를 모달로 띄운다
-    Fancybox.show([
-      {
-        src: imageUrl,
-        type: "image",
-      },
-    ]);
+  const user = useAuth((state) => state.user);
+
+  const handleImageClick = (videoKey: string) => {
+    let targetPath = "";
+
+    if (location.pathname.includes("/user/") && user) {
+      targetPath = location.pathname.includes("/movie/")
+        ? `/user/${user.id}/movie/${movieId}/videos/${videoKey}`
+        : `/user/${user.id}/tv/${movieId}/videos/${videoKey}`;
+    } else {
+      targetPath = location.pathname.includes("/movie/")
+        ? `/movie/${movieId}/videos/${videoKey}`
+        : `/tv/${movieId}/videos/${videoKey}`;
+    }
+
+    navigate(targetPath);
   };
 
   useEffect(() => {
-    return () => {
-      Fancybox.destroy();
-    };
-  }, [imageList]);
+    if (videoList && videoList.length > 68) videoList = videoList.slice(0, 68);
+  }, [videoList]);
 
-  if (imageList.length < 5)
+  if (videoList && videoList.length < 3)
     return (
-      <div className="grid grid-cols-4 gap-2">
-        {imageList.map((image, i) => (
+      <div className="grid grid-cols-2 gap-2">
+        {videoList.map((video, i) => (
           <div key={i}>
-            <div className="flex">
+            <div className="flex relative cursor-pointer">
               <div
                 onClick={() => {
-                  handleImageClick(
-                    `https://image.tmdb.org/t/p/original${image.file_path}`
-                  );
+                  handleImageClick(video.key);
                 }}
               >
                 <img
-                  src={`https://image.tmdb.org/t/p/w500${image.file_path}`}
-                  className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
+                  src={`https://img.youtube.com/vi/${video.key}/hqdefault.jpg`}
+                  className="object-cover rounded-[4px] max-h-[400px] aspect-video"
                   alt={`movie-image-${i}`}
                 />
+                <i className="fa-solid fa-circle-play fa-2xl absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 opacity-40"></i>
               </div>
             </div>
           </div>
@@ -121,21 +132,20 @@ export default function SlickImageSlide({
   return (
     <div className="w-[100%] list-slider mt-5">
       <Slider {...settings}>
-        {imageList.map((image, i) => (
+        {videoList.map((video, i) => (
           <div key={i}>
-            <div className="flex">
+            <div className="flex relative cursor-pointer">
               <div
                 onClick={() => {
-                  handleImageClick(
-                    `https://image.tmdb.org/t/p/original${image.file_path}`
-                  );
+                  handleImageClick(video.key);
                 }}
               >
                 <img
-                  src={`https://image.tmdb.org/t/p/w500${image.file_path}`}
-                  className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
+                  src={`https://img.youtube.com/vi/${video.key}/hqdefault.jpg`}
+                  className="object-cover rounded-[4px] max-h-[400px]  aspect-video"
                   alt={`movie-image-${i}`}
                 />
+                <i className="fa-solid fa-circle-play fa-2xl absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 opacity-40"></i>
               </div>
             </div>
           </div>

@@ -1,26 +1,26 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useModal } from "../stores/modalStore";
+import { useModal } from "@stores/modalStore";
 import { useEffect, useState } from "react";
-import Close from "../assets/close.svg";
-import { useParam } from "../stores/paramStore";
+import Close from "@assets/close.svg";
+import { useParam } from "@stores/paramStore";
 import {
   getMovieCredits,
   getMovieDetails,
   getMovieImages,
   getMovieVideos,
-} from "../apis/getMovie";
-import SlickSlideActors from "./SlickSlideActors";
-import YouTubePlayerForModal from "./YouTubePlayForModal";
-import SlickImageSlide from "./SlickImageSlide";
-import SlickVideoSlide from "./SlickVideoSlide";
-import PosterNotFound from "../assets/poster_not_found.svg";
+} from "@apis/getMovie";
+import SlickSlideActors from "./slickslides/SlickSlideActors";
+import YouTubePlayerForModal from "./youtubePlayers/YouTubePlayForModal";
+import SlickImageSlide from "./slickslides/SlickImageSlide";
+import SlickVideoSlide from "./slickslides/SlickVideoSlide";
+import PosterNotFound from "@assets/poster_not_found.svg";
 import {
   getTVCredits,
   getTVDetails,
   getTVImages,
   getTVVideos,
-} from "../apis/getTV";
-import { useAuth } from "../stores/authStore";
+} from "@apis/getTV";
+import { useAuth } from "@stores/authStore";
 import {
   addFavorite,
   addWatchlist,
@@ -30,7 +30,7 @@ import {
   getFavoriteTVs,
   getWatchlistMovies,
   getWatchlistTVs,
-} from "../apis/tmdbApi";
+} from "@apis/tmdbApi";
 
 const { Kakao } = window;
 

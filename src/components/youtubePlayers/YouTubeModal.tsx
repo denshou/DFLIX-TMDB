@@ -1,6 +1,6 @@
 import YouTube from "react-youtube";
-import { useModal } from "../stores/modalStore";
-import { useParam } from "../stores/paramStore";
+import { useModal } from "@stores/modalStore";
+import { useParam } from "@stores/paramStore";
 import { useNavigate } from "react-router-dom";
 
 export default function YouTubeModal() {

@@ -1,5 +1,15 @@
 import { axiosInstance } from ".";
 
+export const getAccount = async (sessionId: string) => {
+  return (
+    await axiosInstance.get(
+      `/account?api_key=${
+        import.meta.env.VITE_TMDB_API_KEY
+      }&session_id=${sessionId}`
+    )
+  ).data;
+};
+
 export const addFavorite = async (
   accountId: number,
   type: string,
@@ -21,7 +31,7 @@ export const addFavorite = async (
     );
     return response.data;
   } catch (error) {
-    console.error("Error adding favorite:", error);
+    console.error(error);
   }
 };
 
@@ -70,7 +80,7 @@ export const deleteFavorite = async (
     );
     return response.data;
   } catch (error) {
-    console.error("Error adding favorite:", error);
+    console.error(error);
   }
 };
 
@@ -95,7 +105,7 @@ export const deleteWatchlist = async (
     );
     return response.data;
   } catch (error) {
-    console.error("Error adding favorite:", error);
+    console.error(error);
   }
 };
 
@@ -109,7 +119,7 @@ export const getFavoriteMovies = async (accountId: number) => {
     );
     return response.data.results;
   } catch (error) {
-    console.error("Error adding favorite:", error);
+    console.error(error);
   }
 };
 export const getWatchlistMovies = async (accountId: number) => {
@@ -122,7 +132,7 @@ export const getWatchlistMovies = async (accountId: number) => {
     );
     return response.data.results;
   } catch (error) {
-    console.error("Error adding favorite:", error);
+    console.error(error);
   }
 };
 
@@ -136,7 +146,7 @@ export const getFavoriteTVs = async (accountId: number) => {
     );
     return response.data.results;
   } catch (error) {
-    console.error("Error adding favorite:", error);
+    console.error(error);
   }
 };
 export const getWatchlistTVs = async (accountId: number) => {
@@ -149,6 +159,6 @@ export const getWatchlistTVs = async (accountId: number) => {
     );
     return response.data.results;
   } catch (error) {
-    console.error("Error adding favorite:", error);
+    console.error(error);
   }
 };

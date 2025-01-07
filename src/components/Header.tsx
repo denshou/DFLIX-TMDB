@@ -1,12 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
-import Search from "../assets/search.svg";
+import Search from "@assets/search.svg";
 import { useEffect, useRef, useState } from "react";
 // import { getAuth, signOut, User } from "firebase/auth";
-import { useSearch } from "../stores/searchStore";
+import { useSearch } from "@stores/searchStore";
 import { createTMDBSession, getTMDBRequestToken } from "../services/tmdb";
-import { axiosInstance } from "../apis";
-import ProfileNotFound from "../assets/profile_not_found.svg";
-import { useAuth } from "../stores/authStore";
+import ProfileNotFound from "@assets/profile_not_found.svg";
+import { useAuth } from "@stores/authStore";
+import { getAccount } from "@apis/tmdbApi";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -110,12 +110,7 @@ export default function Header() {
 
     const getAccountDetail = async (sessionId: string) => {
       try {
-        const response = await axiosInstance.get(
-          `/account?api_key=${
-            import.meta.env.VITE_TMDB_API_KEY
-          }&session_id=${sessionId}`
-        );
-        const userData = response.data;
+        const userData = await getAccount(sessionId);
         if (userData) setUser(userData); // 사용자 정보 업데이트
       } catch (error) {
         console.error("Failed to get account details:", error);

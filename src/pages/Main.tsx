@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
-import MovieListContainer from "../components/MovieListContainer";
-import { useParam } from "../stores/paramStore";
+import MovieListContainer from "@components/MovieListContainer";
+import { useParam } from "@stores/paramStore";
 import { useEffect, useRef, useState } from "react";
-import { useModal } from "../stores/modalStore";
-import YouTubePlayer from "../components/YouTubePlayer";
-import { getMovieVideos, getTrendingMovies } from "../apis/getMovie";
+import { useModal } from "@stores/modalStore";
+import YouTubePlayer from "@components/youtubePlayers/YouTubePlayer";
+import { getMovieVideos, getTrendingMovies } from "@apis/getMovie";
 
 export default function Main() {
   const { movieId, personId, videoId } = useParams();

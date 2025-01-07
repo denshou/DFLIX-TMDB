@@ -3,13 +3,13 @@ import {
   getMovies,
   getMoviesWithGenres,
   getTrendingMovies,
-} from "../apis/getMovie";
-import SlickSlide from "./SlickSlide";
-import SlickSlideTrend from "./SlickSlideTrend";
+} from "@apis/getMovie";
+import SlickSlide from "./slickslides/SlickSlide";
+import SlickSlideTrend from "./slickslides/SlickSlideTrend";
 
-import ArrowRight from "../assets/arrow-right.svg";
+import ArrowRight from "@assets/arrow-right.svg";
 import { useNavigate } from "react-router-dom";
-import { getTrendingTVs, getTVs, getTVsWithGenres } from "../apis/getTV";
+import { getTrendingTVs, getTVs, getTVsWithGenres } from "@apis/getTV";
 
 export default function MovieListContainer({
   type,
@@ -38,55 +38,24 @@ export default function MovieListContainer({
   }
 
   const getMovieList = async () => {
-    if (getBy === "trending") {
-      if (type === "movie") {
-        listTitle = "오늘의 영화 TOP10";
-        try {
-          const movieList = await getTrendingMovies();
-          setMovieList(movieList.slice(0, 10));
-        } catch (error) {
-          console.log(error);
-        }
-      } else if (type === "tv") {
-        try {
-          const movieList = await getTrendingTVs();
-          setMovieList(movieList.slice(0, 10));
-        } catch (error) {
-          console.log(error);
-        }
+    let movieList = [];
+    try {
+      if (getBy === "trending") {
+        movieList = type === "movie" ? await getTrendingMovies() : await getTrendingTVs();
+        setMovieList(movieList.slice(0, 10));
+      } else if (getBy === "popular") {
+        movieList = type === "movie" ? await getMovies(getBy) : await getTVs(getBy);
+        setMovieList(movieList);
+      } else if (getBy === "genres" && genreId) {
+        movieList = type === "movie" ? await getMoviesWithGenres(genreId) : await getTVsWithGenres(genreId);
+        setMovieList(movieList);
       }
-    } else if (getBy === "popular") {
-      if (type === "movie") {
-        try {
-          const movieList = await getMovies(getBy);
-          setMovieList(movieList);
-        } catch (error) {
-          console.log(error);
-        }
-      } else if (type === "tv") {
-        try {
-          const movieList = await getTVs(getBy);
-          setMovieList(movieList);
-        } catch (error) {
-          console.log(error);
-        }
+  
+      if (movieList.length === 0) {
+        console.log("No movies or TV shows found.");
       }
-    } else if (getBy === "genres" && genreId) {
-      if (type === "movie") {
-        try {
-          const movieList = await getMoviesWithGenres(genreId);
-          setMovieList(movieList);
-        } catch (error) {
-          console.log(error);
-        }
-      } else if (type === "tv") {
-        try {
-          const movieList = await getTVsWithGenres(genreId);
-          setMovieList(movieList);
-        } catch (error) {
-          console.log(error);
-        }
-      }
+    } catch (error) {
+      console.error("Error fetching movie list:", error);
     }
   };
   useEffect(() => {
@@ -109,7 +78,7 @@ export default function MovieListContainer({
           </h2>
         </div>
         <div className="flex flex-col items-center">
-          <SlickSlideTrend movieList={movieList} type={type}/>
+          <SlickSlideTrend movieList={movieList} type={type} />
         </div>
       </div>
     );

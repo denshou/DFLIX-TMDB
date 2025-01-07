@@ -1,20 +1,16 @@
 import { useEffect, useState } from "react";
-import { useSearch } from "../stores/searchStore";
-import {
-  getMovieSearch,
-  getPersonSearch,
-  getTVSearch,
-} from "../apis/getSearch";
-import useDebounce from "../hooks/useDebounce";
+import { useSearch } from "@stores/searchStore";
+import { getMovieSearch, getPersonSearch, getTVSearch } from "@apis/getSearch";
+import useDebounce from "@hooks/useDebounce";
 import { useNavigate, useParams } from "react-router-dom";
-import { useModal } from "../stores/modalStore";
-import { useParam } from "../stores/paramStore";
-import { getMovies, getMoviesWithGenres } from "../apis/getMovie";
+import { useModal } from "@stores/modalStore";
+import { useParam } from "@stores/paramStore";
+import { getMovies, getMoviesWithGenres } from "@apis/getMovie";
 
-import ArrowDown from "../assets/arrow-down.svg";
-import PosterNotFound from "../assets/poster_not_found.svg";
-import ProfileNotFound from "../assets/profile_not_found.svg";
-import { getTVs, getTVsWithGenres } from "../apis/getTV";
+import ArrowDown from "@assets/arrow-down.svg";
+import PosterNotFound from "@assets/poster_not_found.svg";
+import ProfileNotFound from "@assets/profile_not_found.svg";
+import { getTVs, getTVsWithGenres } from "@apis/getTV";
 
 export default function Search() {
   const { movieId, personId, type, getBy } = useParams();
@@ -28,12 +24,158 @@ export default function Search() {
   const setDetailModalOpen = useModal((state) => state.setDetailModalOpen);
   const setPersonIdParam = useParam((state) => state.setPersonIdParam);
 
-  const setTypeParam = useParam((state) => state.setTypeParam);
+  const setGetByParam = useParam((state) => state.setGetByParam);
 
   const [page, setPage] = useState(1);
   const [moviePage, setMoviePage] = useState(1);
   const [tvPage, setTVPage] = useState(1);
   const [personPage, setPersonPage] = useState(1);
+
+  const [searchTitle, setSearchTitle] = useState("");
+  const movieGenres = [
+    {
+      id: 28,
+      name: "액션",
+    },
+    {
+      id: 12,
+      name: "모험",
+    },
+    {
+      id: 16,
+      name: "애니메이션",
+    },
+    {
+      id: 35,
+      name: "코미디",
+    },
+    {
+      id: 80,
+      name: "범죄",
+    },
+    {
+      id: 99,
+      name: "다큐멘터리",
+    },
+    {
+      id: 18,
+      name: "드라마",
+    },
+    {
+      id: 10751,
+      name: "가족",
+    },
+    {
+      id: 14,
+      name: "판타지",
+    },
+    {
+      id: 36,
+      name: "역사",
+    },
+    {
+      id: 27,
+      name: "공포",
+    },
+    {
+      id: 10402,
+      name: "음악",
+    },
+    {
+      id: 9648,
+      name: "미스터리",
+    },
+    {
+      id: 10749,
+      name: "로맨스",
+    },
+    {
+      id: 878,
+      name: "SF",
+    },
+    {
+      id: 10770,
+      name: "TV 영화",
+    },
+    {
+      id: 53,
+      name: "스릴러",
+    },
+    {
+      id: 10752,
+      name: "전쟁",
+    },
+    {
+      id: 37,
+      name: "서부",
+    },
+  ];
+  const tvGenres = [
+    {
+      id: 10759,
+      name: "Action & Adventure",
+    },
+    {
+      id: 16,
+      name: "애니메이션",
+    },
+    {
+      id: 35,
+      name: "코미디",
+    },
+    {
+      id: 80,
+      name: "범죄",
+    },
+    {
+      id: 99,
+      name: "다큐멘터리",
+    },
+    {
+      id: 18,
+      name: "드라마",
+    },
+    {
+      id: 10751,
+      name: "가족",
+    },
+    {
+      id: 10762,
+      name: "Kids",
+    },
+    {
+      id: 9648,
+      name: "미스터리",
+    },
+    {
+      id: 10763,
+      name: "News",
+    },
+    {
+      id: 10764,
+      name: "Reality",
+    },
+    {
+      id: 10765,
+      name: "Sci-Fi & Fantasy",
+    },
+    {
+      id: 10766,
+      name: "Soap",
+    },
+    {
+      id: 10767,
+      name: "Talk",
+    },
+    {
+      id: 10768,
+      name: "War & Politics",
+    },
+    {
+      id: 37,
+      name: "서부",
+    },
+  ];
 
   //
   const handlePosterClick = (movieId: number) => {
@@ -101,9 +243,9 @@ export default function Search() {
   }, [personId]);
 
   useEffect(() => {
-    if (!getBy) setTypeParam(null);
+    if (!getBy) setGetByParam(null);
     else {
-      setTypeParam(getBy);
+      setGetByParam(getBy);
       setPage(1);
     }
   }, [getBy]);
@@ -121,7 +263,7 @@ export default function Search() {
     setPersonPage((prev) => prev + 1);
   };
 
-  //
+  //정리
   useEffect(() => {
     const getNextPage = async () => {
       if (
@@ -208,6 +350,7 @@ export default function Search() {
       getMoreSearchedMovies();
     }
   }, [moviePage]);
+
   useEffect(() => {
     const getMoreSearchedTVs = async () => {
       try {
@@ -226,10 +369,14 @@ export default function Search() {
       getMoreSearchedTVs();
     }
   }, [tvPage]);
+
   useEffect(() => {
     const getMoreSearchedPeople = async () => {
       try {
-        const nextPeople = await getPersonSearch(searchWordDebounce, personPage);
+        const nextPeople = await getPersonSearch(
+          searchWordDebounce,
+          personPage
+        );
         setSearchedPeople((prev) => {
           const uniquePeople = nextPeople.filter(
             (newPerson: PersonDetailType) =>
@@ -246,13 +393,28 @@ export default function Search() {
     }
   }, [personPage]);
 
+  useEffect(() => {
+    if (getBy === "popular") {
+      if (type === "movie") setSearchTitle("인기있는 영화");
+      else setSearchTitle("인기있는 TV 프로그램");
+    } else if (type === "movie") {
+      movieGenres.forEach((genre) => {
+        if (Number(getBy) === genre.id) setSearchTitle(`영화 / ${genre.name}`);
+      });
+    } else if (type === "tv") {
+      tvGenres.forEach((genre) => {
+        if (Number(getBy) === genre.id) setSearchTitle(`TV / ${genre.name}`);
+      });
+    }
+  }, [type, getBy]);
+
   if (!location.pathname.includes("/search")) {
     return (
       <>
         <div className="px-20">
-          {/* <h2 className="text-[1.4vw] mb-2 w-[90%]">
-            <p>{getBy}</p>
-          </h2> */}
+          <h2 className="text-[1.4vw] mb-2 w-[90%]">
+            <p>{searchTitle}</p>
+          </h2>
           <div className="grid grid-cols-9 gap-3">
             {searchedMovies.map((movie) => (
               <div

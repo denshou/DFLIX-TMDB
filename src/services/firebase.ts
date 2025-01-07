@@ -4,12 +4,12 @@ import { getFirestore } from "firebase/firestore";
 
 // Firebase 설정
 const firebaseConfig = {
-    apiKey: "AIzaSyD3yZXsJ2pPFSGbBs7GZb8cN5F4lFKFLRI",
-    authDomain: "dflix-73a5c.firebaseapp.com",
-    projectId: "dflix-73a5c",
-    storageBucket: "dflix-73a5c.firebasestorage.app",
-    messagingSenderId: "386593667687",
-    appId: "1:386593667687:web:a34776c9b666974143b2c2",
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 // Firebase 초기화

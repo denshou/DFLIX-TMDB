@@ -7,8 +7,8 @@ type ParamStoreType = {
   setPersonIdParam: (personId: number | null) => void;
   videoIdParam: string | null;
   setVideoIdParam: (videoId: string | null) => void;
-  typeParam: string | null;
-  setTypeParam: (type: string | null) => void;
+  getByParam: string | null;
+  setGetByParam: (getBy: string | null) => void;
 };
 
 export const useParam = create<ParamStoreType>((set) => ({
@@ -27,9 +27,9 @@ export const useParam = create<ParamStoreType>((set) => ({
     set(() => ({
       videoIdParam: videoId,
     })),
-  typeParam: null,
-  setTypeParam: (type) =>
+  getByParam: null,
+  setGetByParam: (getBy) =>
     set(() => ({
-      typeParam: type,
+      getByParam: getBy,
     })),
 }));

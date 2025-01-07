@@ -1,13 +1,13 @@
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import ArrowLeft from "../assets/arrow-left.svg";
-import ArrowRight from "../assets/arrow-right.svg";
-import ProfileNotFound from "../assets/profile_not_found.svg";
-import { useModal } from "../stores/modalStore";
+import ArrowLeft from "@assets/arrow-left.svg";
+import ArrowRight from "@assets/arrow-right.svg";
+import ProfileNotFound from "@assets/profile_not_found.svg";
+import { useModal } from "@stores/modalStore";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useParam } from "../stores/paramStore";
-import { useAuth } from "../stores/authStore";
+import { useParam } from "@stores/paramStore";
+import { useAuth } from "@stores/authStore";
 
 const CustomPrevArrow = (props: any) => {
   const { className, style, onClick } = props;
@@ -79,26 +79,24 @@ export default function SlickSlideActors({ actors }: { actors: ActorType[] }) {
 
   const setDetailModalOpen = useModal((state) => state.setDetailModalOpen);
   const movieId = useParam((state) => state.movieIdParam);
-  const type = useParam((state) => state.typeParam);
+  const getBy = useParam((state) => state.getByParam);
 
   const handleSlideClick = (actorId: number) => {
+    let basePath = "";
     if (location.pathname.includes("/user/") && user) {
-      console.log(user);
-      if (location.pathname.includes("/movie/"))
-        navigate(`/user/${user.id}/movie/${movieId}/person/${actorId}`);
-      else navigate(`/user/${user.id}/tv/${movieId}/person/${actorId}`);
+      basePath = `/user/${user.id}`;
+    } else if (location.pathname.includes("search")) {
+      basePath = "/search";
+    } else if (location.pathname.includes("/m/")) {
+      basePath = `/m/${getBy}`;
     }
-    else if (location.pathname.includes("search"))
-      navigate(`/search/movie/${movieId}/person/${actorId}`);
-    else if (location.pathname.includes("/m/")) {
-      if (location.pathname.includes("/movie/"))
-        navigate(`/m/${type}/movie/${movieId}/person/${actorId}`);
-      else if (location.pathname.includes("/tv/"))
-        navigate(`/m/${type}/tv/${movieId}/person/${actorId}`);
-    } else if (location.pathname.includes("/movie/"))
-      navigate(`/movie/${movieId}/person/${actorId}`);
-    else navigate(`/tv/${movieId}/person/${actorId}`);
+    const mediaType = location.pathname.includes("/movie/") ? "movie" : "tv";
 
+    const targetPath = basePath
+      ? `${basePath}/${mediaType}/${movieId}/person/${actorId}`
+      : `/${mediaType}/${movieId}/person/${actorId}`;
+
+    navigate(targetPath);
     setDetailModalOpen(true);
   };
 
@@ -109,13 +107,15 @@ export default function SlickSlideActors({ actors }: { actors: ActorType[] }) {
           <div key={actor.id} onClick={() => handleSlideClick(actor.id)}>
             <div className="flex flex-col items-center">
               <div className="w-[72px] h-[72px] rounded-full overflow-hidden">
-                
-                  <img
-                    src={actor.profile_path ? `https://image.tmdb.org/t/p/w500/${actor.profile_path}` : ProfileNotFound}
-                    className="w-[72px] h-[72px] object-cover"
-                    alt=""
-                  />
-                
+                <img
+                  src={
+                    actor.profile_path
+                      ? `https://image.tmdb.org/t/p/w500/${actor.profile_path}`
+                      : ProfileNotFound
+                  }
+                  className="w-[72px] h-[72px] object-cover"
+                  alt=""
+                />
               </div>
               <p className="text-center text-[12px] break-keep">{actor.name}</p>
               <p className="text-center text-[10px] text-[#999999]">

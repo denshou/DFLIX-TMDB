@@ -1,13 +1,13 @@
 import { Route, Routes } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import Main from "./pages/Main";
-import MovieInfo from "./components/MovieInfo";
-import { useModal } from "./stores/modalStore";
-import DetailInfo from "./components/DetailInfo";
+import MovieInfo from "@components/MovieInfo";
+import { useModal } from "@stores/modalStore";
+import DetailInfo from "@components/DetailInfo";
 // import SignIn from "./pages/SignIn";
 // import KakaoRedirect from "./pages/KakaoRedirect";
 import Search from "./pages/Search";
-import YouTubeModal from "./components/YouTubeModal";
+import YouTubeModal from "@components/youtubePlayers/YouTubeModal";
 import User from "./pages/User";
 
 function App() {

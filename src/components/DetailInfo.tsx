@@ -1,17 +1,17 @@
 import { useNavigate } from "react-router-dom";
-import { useModal } from "../stores/modalStore";
+import { useModal } from "@stores/modalStore";
 import { useEffect, useState } from "react";
-import Close from "../assets/close.svg";
-import PosterNotFound from "../assets/poster_not_found.svg";
-import { useParam } from "../stores/paramStore";
-import ProfileNotFound from "../assets/profile_not_found.svg";
+import Close from "@assets/close.svg";
+import PosterNotFound from "@assets/poster_not_found.svg";
+import { useParam } from "@stores/paramStore";
+import ProfileNotFound from "@assets/profile_not_found.svg";
 
 import {
   getPersonDetails,
   getPersonMovieCredits,
   getPersonTVCredits,
-} from "../apis/getPerson";
-import { useAuth } from "../stores/authStore";
+} from "@apis/getPerson";
+import { useAuth } from "@stores/authStore";
 
 export default function DetailInfo() {
   const navigate = useNavigate();

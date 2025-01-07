@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import YouTube, { YouTubeEvent } from "react-youtube";
-import { useModal } from "../stores/modalStore";
+import { useModal } from "@stores/modalStore";
 import { useNavigate } from "react-router-dom";
 
 type YouTubePlayer = {
