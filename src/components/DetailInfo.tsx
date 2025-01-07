@@ -6,7 +6,11 @@ import PosterNotFound from "../assets/poster_not_found.svg";
 import { useParam } from "../stores/paramStore";
 import ProfileNotFound from "../assets/profile_not_found.svg";
 
-import { getPersonDetails, getPersonMovieCredits } from "../apis/getPerson";
+import {
+  getPersonDetails,
+  getPersonMovieCredits,
+  getPersonTVCredits,
+} from "../apis/getPerson";
 import { useAuth } from "../stores/authStore";
 
 export default function DetailInfo() {
@@ -23,9 +27,15 @@ export default function DetailInfo() {
   const [currentPerson, setCurrentPerson] = useState<PersonDetailType | null>(
     null
   );
-  const [currentPersonCredits, setCurrentPersonCredits] = useState<
+  const [currentPersonMovieCredits, setCurrentPersonMovieCredits] = useState<
     PersonMovieCreditType[] | null
   >(null);
+  const [currentPersonTVCredits, setCurrentPersonTVCredits] = useState<
+    PersonTVCreditType[] | null
+  >(null);
+
+  const [showAllMovies, setShowAllMovies] = useState(false); // 영화 전체 보기 상태
+  const [showAllTVs, setShowAllTVs] = useState(false); // TV 전체 보기 상태
 
   const handleClose = () => {
     if (!movieModalOpen) document.body.style.overflow = "auto";
@@ -47,20 +57,31 @@ export default function DetailInfo() {
   const getPersonCredits = async () => {
     if (personId) {
       try {
-        const appearances = await getPersonMovieCredits(personId);
-        setCurrentPersonCredits(appearances);
+        const appearanceMovies = await getPersonMovieCredits(personId);
+        const appearanceTVs = await getPersonTVCredits(personId);
+        if (appearanceMovies.length)
+          setCurrentPersonMovieCredits(appearanceMovies);
+        if (appearanceTVs.length) setCurrentPersonTVCredits(appearanceTVs);
       } catch (error) {
         console.log(error);
       }
     }
   };
 
-  const handlePosterClick = (movieId: number) => {
+  const handleMoviePosterClick = (movieId: number) => {
     if (location.pathname.includes("/user/") && user) {
       navigate(`/user/${user.id}/movie/${movieId}`);
     } else if (location.pathname.includes("search"))
       navigate(`/search/movie/${movieId}`);
     else navigate(`/movie/${movieId}`);
+    setDetailModalOpen(false);
+  };
+  const handleTVPosterClick = (tvId: number) => {
+    if (location.pathname.includes("/user/") && user) {
+      navigate(`/user/${user.id}/tv/${tvId}`);
+    } else if (location.pathname.includes("search"))
+      navigate(`/search/tv/${tvId}`);
+    else navigate(`/tv/${tvId}`);
     setDetailModalOpen(false);
   };
 
@@ -125,33 +146,81 @@ export default function DetailInfo() {
           </div>
           <div className="overflow-hidden">
             <p className="text-[18px] my-5">출연작</p>
-            <div className="grid grid-cols-4 gap-3">
-              {currentPersonCredits ? (
-                currentPersonCredits.map((movie) => (
-                  <div
-                    key={movie.id}
-                    className="cursor-pointer"
-                    onClick={() => handlePosterClick(movie.id)}
+            <div>
+              {currentPersonMovieCredits && (
+                <>
+                  <p className="text-[18px] my-5">영화</p>
+                  {/* 영화 전체 보기 버튼 */}
+                  <button
+                    onClick={() => setShowAllMovies(!showAllMovies)}
+                    className="text-blue-500 mb-3"
                   >
-                    <div>
-                      {movie.poster_path ? (
-                        <img
-                          src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                          className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
-                          alt="movie-poster"
-                        />
-                      ) : (
-                        <img
-                          src={PosterNotFound}
-                          className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
-                          alt="movie-poster"
-                        />
-                      )}
-                    </div>
+                    {showAllMovies ? "영화 접기" : "영화 전체 보기"}
+                  </button>
+                  <div className="grid grid-cols-4 gap-3">
+                    {currentPersonMovieCredits
+                      .sort((a, b) => b.popularity - a.popularity)
+                      .slice(
+                        0,
+                        showAllMovies ? currentPersonMovieCredits.length : 8
+                      )
+                      .map((movie, i) => (
+                        <div
+                          key={i}
+                          className="cursor-pointer"
+                          onClick={() => handleMoviePosterClick(movie.id)}
+                        >
+                          <div>
+                            <img
+                              src={
+                                movie.poster_path
+                                  ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+                                  : PosterNotFound
+                              }
+                              className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
+                              alt="movie-poster"
+                            />
+                          </div>
+                        </div>
+                      ))}
                   </div>
-                ))
-              ) : (
-                <></>
+                </>
+              )}
+              {currentPersonTVCredits && (
+                <>
+                  <p className="text-[18px] mb-5 mt-20">TV</p>
+                  {/* TV 전체 보기 버튼 */}
+                  <button
+                    onClick={() => setShowAllTVs(!showAllTVs)}
+                    className="text-blue-500 mb-3"
+                  >
+                    {showAllTVs ? "TV 접기" : "TV 전체 보기"}
+                  </button>
+                  <div className="grid grid-cols-4 gap-3">
+                    {currentPersonTVCredits
+                      .sort((a, b) => b.popularity - a.popularity)
+                      .slice(0, showAllTVs ? currentPersonTVCredits.length : 8)
+                      .map((tv, i) => (
+                        <div
+                          key={i}
+                          className="cursor-pointer"
+                          onClick={() => handleTVPosterClick(tv.id)}
+                        >
+                          <div>
+                            <img
+                              src={
+                                tv.poster_path
+                                  ? `https://image.tmdb.org/t/p/w500/${tv.poster_path}`
+                                  : PosterNotFound
+                              }
+                              className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
+                              alt="movie-poster"
+                            />
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </>
               )}
             </div>
           </div>

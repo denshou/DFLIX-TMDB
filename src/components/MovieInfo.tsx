@@ -448,33 +448,51 @@ export default function MovieInfo() {
                   )}
                 </li>
               </ul>
-              <button
-                type="button"
-                onClick={
-                  currentMovie && favoriteIds?.includes(currentMovie?.id)
-                    ? handleDeleteFavorite // 삭제 기능
-                    : handleAddFavorite // 추가 기능
-                }
-                className="border"
-              >
-                {currentMovie && favoriteIds?.includes(currentMovie?.id)
-                  ? "Delete Favorite"
-                  : "Add Favorite"}
-              </button>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={
+                    currentMovie && favoriteIds?.includes(currentMovie?.id)
+                      ? handleDeleteFavorite // 삭제 기능
+                      : handleAddFavorite // 추가 기능
+                  }
+                  className="border rounded-full w-8 h-8 flex justify-center items-center"
+                >
+                  {currentMovie && favoriteIds?.includes(currentMovie?.id) ? (
+                    <i
+                      className="fa-solid fa-heart ml-[1px]"
+                      style={{ color: "#F44336" }}
+                    ></i>
+                  ) : (
+                    <i
+                      className="fa-regular fa-heart ml-[1px]"
+                      style={{ color: "#ffffff" }}
+                    ></i>
+                  )}
+                </button>
 
-              <button
-                type="button"
-                onClick={
-                  currentMovie && watchlistIds?.includes(currentMovie?.id)
-                    ? handleDeleteWatchlist // 삭제 기능
-                    : handleAddWatchlist // 추가 기능
-                }
-                className="border"
-              >
-                {currentMovie && watchlistIds?.includes(currentMovie?.id)
-                  ? "Delete Watchlist"
-                  : "Add Watchlist"}
-              </button>
+                <button
+                  type="button"
+                  onClick={
+                    currentMovie && watchlistIds?.includes(currentMovie?.id)
+                      ? handleDeleteWatchlist // 삭제 기능
+                      : handleAddWatchlist // 추가 기능
+                  }
+                  className="border rounded-full w-8 h-8 flex justify-center items-center"
+                >
+                  {currentMovie && watchlistIds?.includes(currentMovie?.id) ? (
+                    <i
+                      className="fa-solid fa-check ml-[1px]"
+                      style={{ color: "#ffffff" }}
+                    ></i>
+                  ) : (
+                    <i
+                      className="fa-solid fa-plus ml-[1px]"
+                      style={{ color: "#ffffff" }}
+                    ></i>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
           <button
