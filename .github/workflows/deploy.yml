@@ -1,0 +1,43 @@
+name: Build and Deploy to Netlify
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: main
+
+      - name: Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.18.x'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build
+        run: yarn vite build
+        env:
+          VITE_PUBLIC_URL: ${{ secrets.VITE_PUBLIC_URL }}
+          VITE_KAKAO_JAVASCRIPT_KEY: ${{ secrets.VITE_KAKAO_JAVASCRIPT_KEY }}
+          VITE_TMDB_API_KEY: ${{ secrets.VITE_TMDB_API_KEY }}
+          VITE_TMDB_ACCESS_TOKEN: ${{ secrets.VITE_TMDB_ACCESS_TOKEN }}
+
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v2.0
+        with:
+          publish-dir: './dist'
+          production-branch: main
+          github-token: ${{ secrets.GIT_HUB_TOKEN }}
+          deploy-message: "Deploy from GitHub Actions"
+          enable-pull-request-comment: false
+          enable-commit-comment: false
+          overwrites-pull-request-comment: false
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        timeout-minutes: 1
