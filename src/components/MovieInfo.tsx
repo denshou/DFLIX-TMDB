@@ -366,7 +366,7 @@ export default function MovieInfo() {
                     : PosterNotFound
                 }
                 className="w-[200px]"
-                alt=""
+                alt="movie-poster"
               />
             </div>
             <div className="flex flex-col gap-4">
@@ -453,8 +453,8 @@ export default function MovieInfo() {
                   type="button"
                   onClick={
                     currentMovie && favoriteIds?.includes(currentMovie?.id)
-                      ? handleDeleteFavorite // 삭제 기능
-                      : handleAddFavorite // 추가 기능
+                      ? handleDeleteFavorite
+                      : handleAddFavorite
                   }
                   className="border rounded-full w-8 h-8 flex justify-center items-center"
                 >
@@ -475,8 +475,8 @@ export default function MovieInfo() {
                   type="button"
                   onClick={
                     currentMovie && watchlistIds?.includes(currentMovie?.id)
-                      ? handleDeleteWatchlist // 삭제 기능
-                      : handleAddWatchlist // 추가 기능
+                      ? handleDeleteWatchlist
+                      : handleAddWatchlist
                   }
                   className="border rounded-full w-8 h-8 flex justify-center items-center"
                 >

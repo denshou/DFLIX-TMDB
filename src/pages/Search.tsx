@@ -423,19 +423,15 @@ export default function Search() {
                 onClick={() => handlePosterClick(movie.id)}
               >
                 <div>
-                  {movie.poster_path ? (
-                    <img
-                      src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                      className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
-                      alt="movie-poster"
-                    />
-                  ) : (
-                    <img
-                      src={PosterNotFound}
-                      className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
-                      alt="movie-poster"
-                    />
-                  )}
+                  <img
+                    src={
+                      movie.poster_path
+                        ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+                        : PosterNotFound
+                    }
+                    className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
+                    alt="movie-poster"
+                  />
                 </div>
               </div>
             ))}
@@ -470,19 +466,15 @@ export default function Search() {
               onClick={() => handleMoviePosterClick(movie.id)}
             >
               <div>
-                {movie.poster_path ? (
-                  <img
-                    src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                    className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
-                    alt="movie-poster"
-                  />
-                ) : (
-                  <img
-                    src={PosterNotFound}
-                    className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
-                    alt="movie-poster"
-                  />
-                )}
+                <img
+                  src={
+                    movie.poster_path
+                      ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+                      : PosterNotFound
+                  }
+                  className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
+                  alt="movie-poster"
+                />
               </div>
             </div>
           ))}
@@ -511,19 +503,15 @@ export default function Search() {
               onClick={() => handleTVPosterClick(tv.id)}
             >
               <div>
-                {tv.poster_path ? (
-                  <img
-                    src={`https://image.tmdb.org/t/p/w500/${tv.poster_path}`}
-                    className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
-                    alt="tv-poster"
-                  />
-                ) : (
-                  <img
-                    src={PosterNotFound}
-                    className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
-                    alt="tv-poster"
-                  />
-                )}
+                <img
+                  src={
+                    tv.poster_path
+                      ? `https://image.tmdb.org/t/p/w500/${tv.poster_path}`
+                      : PosterNotFound
+                  }
+                  className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
+                  alt="tv-poster"
+                />
               </div>
             </div>
           ))}
@@ -552,19 +540,15 @@ export default function Search() {
               onClick={() => handlePersonClick(person.id)}
             >
               <div>
-                {person.profile_path ? (
-                  <img
-                    src={`https://image.tmdb.org/t/p/w500/${person.profile_path}`}
-                    className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
-                    alt="person-profile"
-                  />
-                ) : (
-                  <img
-                    src={ProfileNotFound}
-                    className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
-                    alt="person-profile"
-                  />
-                )}
+                <img
+                  src={
+                    person.profile_path
+                      ? `https://image.tmdb.org/t/p/w500/${person.profile_path}`
+                      : ProfileNotFound
+                  }
+                  className="object-cover rounded-[4px] max-h-[400px] aspect-[2/3]"
+                  alt="person-profile"
+                />
               </div>
             </div>
           ))}

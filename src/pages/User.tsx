@@ -6,11 +6,10 @@ import {
   getWatchlistMovies,
   getWatchlistTVs,
 } from "@apis/tmdbApi";
-import SlickSlide from "@components/slickslides/SlickSlide";
 import { useParams } from "react-router-dom";
 import { useModal } from "@stores/modalStore";
 import { useParam } from "@stores/paramStore";
-// import ArrowRight from "../assets/arrow-right.svg";
+import UserLikeSection from "@components/UserLikeSection";
 
 export default function User() {
   const user = useAuth((state) => state.user);
@@ -20,8 +19,8 @@ export default function User() {
   const [watchlistMovies, setWatchlistMovies] = useState<MovieType[] | null>(
     null
   );
-  const [favoriteTVs, setFavoriteTVs] = useState<MovieType[] | null>(null);
-  const [watchlistTVs, setWatchlistTVs] = useState<MovieType[] | null>(null);
+  const [favoriteTVs, setFavoriteTVs] = useState<TVType[] | null>(null);
+  const [watchlistTVs, setWatchlistTVs] = useState<TVType[] | null>(null);
   useEffect(() => {
     if (!user) return;
     const fetchFavoriteMovies = async () => {
@@ -90,67 +89,22 @@ export default function User() {
 
   return (
     <>
-      {/* //컴포넌트로 분리 */}
-      {/* favorite movies */}
-      <div className="list-container mb-10">
-        <div className="flex justify-center">
-          <h2 className="text-[1.4vw] flex mb-2 w-[90%]">
-            <p className="cursor-pointer">Favorite Movies</p>
-          </h2>
-        </div>
-        <div className="flex flex-col items-center">
-          {favoriteMovies?.length ? (
-            <SlickSlide movieList={favoriteMovies} type="movie" />
-          ) : (
-            <div className="text-[1.2vw]">Favorite Movies가 비어있습니다.</div>
-          )}
-        </div>
-      </div>
-      {/* watchlist movies */}
-      <div className="list-container mb-10">
-        <div className="flex justify-center">
-          <h2 className="text-[1.4vw] flex mb-2 w-[90%]">
-            <p className="cursor-pointer">Watchlist Movies</p>
-          </h2>
-        </div>
-        <div className="flex flex-col items-center">
-          {watchlistMovies?.length ? (
-            <SlickSlide movieList={watchlistMovies} type="movie" />
-          ) : (
-            <div className="text-[1.2vw]">Watchlist Movies가 비어있습니다.</div>
-          )}
-        </div>
-      </div>
-      {/* favorite TVs */}
-      <div className="list-container mb-10">
-        <div className="flex justify-center">
-          <h2 className="text-[1.4vw] flex mb-2 w-[90%]">
-            <p className="cursor-pointer">Favorite TVs</p>
-          </h2>
-        </div>
-        <div className="flex flex-col items-center">
-          {favoriteTVs?.length ? (
-            <SlickSlide movieList={favoriteTVs} type="tv" />
-          ) : (
-            <div className="text-[1.2vw]">Favorite TVs가 비어있습니다.</div>
-          )}
-        </div>
-      </div>
-      {/* watchlist TVs */}
-      <div className="list-container mb-10">
-        <div className="flex justify-center">
-          <h2 className="text-[1.4vw] flex mb-2 w-[90%]">
-            <p className="cursor-pointer">Watchlist TVs</p>
-          </h2>
-        </div>
-        <div className="flex flex-col items-center">
-          {watchlistTVs?.length ? (
-            <SlickSlide movieList={watchlistTVs} type="tv" />
-          ) : (
-            <div className="text-[1.2vw]">Watchlist TVs가 비어있습니다.</div>
-          )}
-        </div>
-      </div>
+      <UserLikeSection
+        title="Favorite Movies"
+        mediaList={favoriteMovies}
+        type="movie"
+      />
+      <UserLikeSection
+        title="Watchlist Movies"
+        mediaList={watchlistMovies}
+        type="movie"
+      />
+      <UserLikeSection title="Favorite TVs" mediaList={favoriteTVs} type="tv" />
+      <UserLikeSection
+        title="Watchlist TVs"
+        mediaList={watchlistTVs}
+        type="tv"
+      />
     </>
   );
 }

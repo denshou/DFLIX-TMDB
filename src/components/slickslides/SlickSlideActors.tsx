@@ -114,7 +114,7 @@ export default function SlickSlideActors({ actors }: { actors: ActorType[] }) {
                       : ProfileNotFound
                   }
                   className="w-[72px] h-[72px] object-cover"
-                  alt=""
+                  alt="movie-actor-image"
                 />
               </div>
               <p className="text-center text-[12px] break-keep">{actor.name}</p>
@@ -135,19 +135,15 @@ export default function SlickSlideActors({ actors }: { actors: ActorType[] }) {
           <div key={actor.id} onClick={() => handleSlideClick(actor.id)}>
             <div className="flex flex-col items-center">
               <div className="w-[72px] h-[72px] rounded-full overflow-hidden">
-                {actor.profile_path ? (
-                  <img
-                    src={`https://image.tmdb.org/t/p/w500/${actor.profile_path}`}
-                    className="w-[72px] h-[72px] object-cover"
-                    alt=""
-                  />
-                ) : (
-                  <img
-                    src={ProfileNotFound}
-                    className="w-[72px] h-[72px] object-cover"
-                    alt=""
-                  />
-                )}
+                <img
+                  src={
+                    actor.profile_path
+                      ? `https://image.tmdb.org/t/p/w500/${actor.profile_path}`
+                      : ProfileNotFound
+                  }
+                  className="w-[72px] h-[72px] object-cover"
+                  alt="movie-actor-image"
+                />
               </div>
               <p className="text-center text-[12px] break-keep">{actor.name}</p>
               <p className="text-center text-[10px] text-[#999999]">

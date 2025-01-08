@@ -133,7 +133,7 @@ export default function SlickSlideTrend({
               <img
                 src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                 className="object-cover rounded-[4px] aspect-[2/3]"
-                alt="movie-poster"
+                alt={`movie-image-${index}`}
               />
             </div>
           </div>

@@ -207,7 +207,7 @@ export default function Header() {
                       : ProfileNotFound
                   }
                   className="object-cover w-full h-full"
-                  alt=""
+                  alt="logo-image"
                 />
               </div>
               <p className="ml-2">{user.username} 님</p>

@@ -125,15 +125,15 @@ export default function DetailInfo() {
           </button>
           <div className="flex gap-5">
             <div className="rounded-lg overflow-hidden">
-              {currentPerson?.profile_path ? (
-                <img
-                  src={`https://image.tmdb.org/t/p/w500/${currentPerson?.profile_path}`}
-                  className="w-[200px]"
-                  alt=""
-                />
-              ) : (
-                <img src={ProfileNotFound} className="w-[200px]" alt="" />
-              )}
+              <img
+                src={
+                  currentPerson?.profile_path
+                    ? `https://image.tmdb.org/t/p/w500/${currentPerson?.profile_path}`
+                    : ProfileNotFound
+                }
+                className="w-[200px]"
+                alt="movie-poster"
+              />
             </div>
             <div className="flex flex-col gap-2">
               <h2 className="text-[22px]">{currentPerson?.name}</h2>
